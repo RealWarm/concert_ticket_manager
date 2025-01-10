@@ -23,6 +23,14 @@ public class ConcertEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ConcertStatus status;
 
+    //단위테스트용
+    @Builder
+    public ConcertEntity(Long id, String concertName, ConcertStatus status) {
+        this.id = id;
+        this.concertName = concertName;
+        this.status = status;
+    }
+
     @Builder
     public ConcertEntity(String concertName, ConcertStatus status) {
         this.concertName = concertName;
