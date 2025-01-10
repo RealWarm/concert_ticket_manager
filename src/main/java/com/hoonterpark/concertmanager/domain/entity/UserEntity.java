@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,13 @@ public class UserEntity {
     private String name;
 
     private Long point=0L;
+
+    @Builder
+    public UserEntity(Long id, String name, Long point) {
+        this.id = id;
+        this.name = name;
+        this.point = point;
+    }
 
 
     public void chargePoint(Long point) {
