@@ -3,6 +3,7 @@ package com.hoonterpark.concertmanager.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,12 @@ public class ConcertScheduleEntity extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime performanceDay;
+
+    @Builder
+    public ConcertScheduleEntity(Long concertId, LocalDateTime performanceDay) {
+        this.concertId = concertId;
+        this.performanceDay = performanceDay;
+    }
 
 
     public Boolean isAvailable(LocalDateTime now){
