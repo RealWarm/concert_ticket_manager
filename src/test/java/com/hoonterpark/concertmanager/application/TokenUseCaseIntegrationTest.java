@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -88,24 +89,16 @@ public class TokenUseCaseIntegrationTest {
     @Test
     public void testGetQueueToken_NotFound() {
         // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            tokenUseCase.getQueueToken("invalid-token-value"); // 존재하지 않는 토큰
-        });
-
-        assertThat(exception.getMessage()).isEqualTo("존재하지 않는 토큰 입니다."); // 예외 메시지 확인
+        assertThatThrownBy(() -> tokenUseCase.getQueueToken("invalid-token-value"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 토큰 입니다.");
     }
 
     @Test
     public void testExpireToken() {
-        // Given
-        // No specific setup needed for this test
-
         // When
         tokenUseCase.expireToken(LocalDateTime.now().plusMinutes(1));
-
         // Then
-        // 만료 처리에 대한 추가 검증 로직이 필요할 수 있습니다.
-        // 예를 들어, TokenService의 expireToken 메서드가 호출되었는지 확인할 수 있습니다.
         verify(tokenService).expireToken(any());
     }
 
@@ -118,8 +111,6 @@ public class TokenUseCaseIntegrationTest {
         tokenUseCase.activateToken(LocalDateTime.now().plusMinutes(1));
 
         // Then
-        // 활성화 처리에 대한 추가 검증 로직이 필요할 수 있습니다.
-        // 예를 들어, TokenService의 activateToken 메서드가 호출되었는지 확인할 수 있습니다.
         verify(tokenService).activateToken(any());
     }
 }
