@@ -52,7 +52,7 @@ public class TokenUseCaseIntegrationTest {
                 .build();
 
         when(userService.findById(anyLong())).thenReturn(new UserEntity(1L, "hoon", 1000L)); // Mock user
-        when(tokenService.issueToken(any())).thenReturn(newToken);
+        when(tokenService.makeToken(any())).thenReturn(newToken);
         when(tokenService.getWaitingNumber(anyString())).thenReturn(0); // Mock waiting number
 
         // When

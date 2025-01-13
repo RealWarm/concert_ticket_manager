@@ -75,7 +75,7 @@ public class PaymentUseCaseIntegrationTest {
                 .tokenValue("valid-token")
                 .expiredAt(LocalDateTime.now().plusMinutes(10))
                 .build();
-        tokenService.issueToken(LocalDateTime.now()); // 토큰 발행
+        tokenService.makeToken(LocalDateTime.now()); // 토큰 발행
 
         seat = SeatEntity.builder()
                 .concertScheduleId(1L)

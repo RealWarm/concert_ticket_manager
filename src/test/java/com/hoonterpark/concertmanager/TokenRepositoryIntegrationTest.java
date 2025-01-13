@@ -4,7 +4,6 @@ package com.hoonterpark.concertmanager;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
-import com.hoonterpark.concertmanager.domain.service.TokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,10 +26,10 @@ public class TokenRepositoryIntegrationTest {
 
     private TokenEntity token1;
     private TokenEntity token2;
+    private TokenEntity token3;
 
     @BeforeEach
     public void setUp() {
-        // 테스트 데이터 준비
         token1 = TokenEntity.builder()
                 .status(TokenStatus.ACTIVE)
                 .tokenValue("token1")
@@ -44,9 +42,15 @@ public class TokenRepositoryIntegrationTest {
                 .expiredAt(LocalDateTime.now().plusMinutes(20))
                 .build();
 
-        tokenRepository.save(token1);
-        tokenRepository.save(token2);
-    }
+        token3 = TokenEntity.builder()
+                .status(TokenStatus.PENDING)
+                .tokenValue("token3")
+                .expiredAt(LocalDateTime.now().plusMinutes(20))
+                .build();
+
+        tokenRepository.saveAll(List.of(token1, token2, token3));
+    }//setUp
+
 
     @Test
     public void testFindByTokenValue() {
@@ -72,16 +76,21 @@ public class TokenRepositoryIntegrationTest {
         List<TokenEntity> foundTokens
                 = tokenRepository.findByStatusIn(List.of(TokenStatus.ACTIVE, TokenStatus.PENDING));
 
-        assertThat(foundTokens).hasSize(2);
+        assertThat(foundTokens)
+                .hasSize(3)
+                .extracting("tokenValue")
+                .containsExactlyInAnyOrder("token1","token2","token3");
     }
 
     @Test
     public void testFindTopNByTokenStatusOrderByExpiredAtAsc() {
         // PENDING 상태의 토큰 중 가장 오래된 N개 조회
         List<TokenEntity> foundTokens
-                = tokenRepository.findTopNByTokenStatusOrderByExpiredAtAsc(List.of(TokenStatus.PENDING), 1);
+                = tokenRepository.findTokensToActivate(1);
 
-        assertThat(foundTokens).hasSize(1);
-        assertThat(foundTokens.get(0).getTokenValue()).isEqualTo("token2");
+        assertThat(foundTokens).hasSize(1)
+                .extracting("tokenValue")
+                .containsExactlyInAnyOrder("token2");
     }
+
 }

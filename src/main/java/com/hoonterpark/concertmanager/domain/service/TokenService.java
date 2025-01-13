@@ -22,15 +22,21 @@ public class TokenService {
 
 
     // 토큰을 발행한다
-    public TokenEntity issueToken(LocalDateTime now) {
+    public TokenEntity makeToken(LocalDateTime now) {
+        return tokenRepository.save(makeToken(now, TOKEN_ACTIVE_TIME));
+    }//issueToken
+
+    // 빌더가 안티패턴이라고 생각함
+    // 엔티티 생성은 Entity안에 넣으면 Non-static 에러가 떠서 안됨
+    // 그래서 아래와 같은 생성 함수로 작성함
+    public TokenEntity makeToken(LocalDateTime now, int tokenActiveTime){
         UUID uuid4 = UUID.randomUUID();
-        // 토큰을 만들어서 발행한다.
         TokenEntity newToken = TokenEntity.builder()
                 .status(TokenStatus.PENDING)
                 .tokenValue(uuid4.toString())
-                .expiredAt(now.plusMinutes(TOKEN_ACTIVE_TIME))
+                .expiredAt(now.plusMinutes(tokenActiveTime))
                 .build();
-        return tokenRepository.save(newToken);
+        return newToken;
     }//issueToken
 
     // 토큰검증
@@ -93,8 +99,7 @@ public class TokenService {
         // 이러면 예) n를 넣어야해 인데 n개중 3개가 시간이 지났으면 n-3개만 넣기 때문에 가득 채우지 못한다.
         // 30개 가져와서 for 문 돌면서 10개 만료하면 반환! 이렇게 할 수 있는데 너무 구현에 억매여 웃긴상황같음
         // 차라리 스케줄러 동작시간을 1분에서 30초로 만들어서 빈번하게 작동하게하는게 맞는거 같음
-        List<TokenStatus> statuses = Arrays.asList(TokenStatus.PENDING);
-        List<TokenEntity> tokens = tokenRepository.findTopNByTokenStatusOrderByExpiredAtAsc(statuses, numberOfUsersToActivate);
+        List<TokenEntity> tokens = tokenRepository.findTokensToActivate(numberOfUsersToActivate);
         // activating한 토큰만 필터링
         List<TokenEntity> activatedTokens = tokens.stream()
                 .filter(token -> token.activateToken(now))

@@ -2,7 +2,6 @@ package com.hoonterpark.concertmanager.application;
 
 
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenRequest;
@@ -31,7 +30,7 @@ public class TokenUseCase {
         userService.findById(userId);
 
         // 토큰을 발행한다.
-        TokenEntity newToken = tokenService.issueToken(now);
+        TokenEntity newToken = tokenService.makeToken(now);
         int waitingNumber = tokenService.getWaitingNumber(newToken.getTokenValue());
 
         return new TokenResponse.TokenQueueResponse(newToken.getTokenValue(), waitingNumber);

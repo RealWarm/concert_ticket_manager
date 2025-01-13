@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Slf4j
@@ -46,6 +47,7 @@ public class TokenEntity extends BaseEntity {
         this.tokenValue = tokenValue;
         this.expiredAt = expiredAt;
     }
+
 
     public Boolean isActive(LocalDateTime now) {
         if (this.status == TokenStatus.ACTIVE) {

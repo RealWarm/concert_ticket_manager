@@ -30,17 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY) // H2 데이터베이스 사용
@@ -88,7 +77,7 @@ public class ReservationUsecaseIntegrationTest {
                 .tokenValue("valid-token")
                 .expiredAt(LocalDateTime.now().plusMinutes(10))
                 .build();
-        tokenService.issueToken(LocalDateTime.now()); // 토큰 발행
+        tokenService.makeToken(LocalDateTime.now()); // 토큰 발행
 
         seat = SeatEntity.builder()
                 .concertScheduleId(1L)

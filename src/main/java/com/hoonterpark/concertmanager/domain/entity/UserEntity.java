@@ -30,6 +30,11 @@ public class UserEntity {
         this.point = point;
     }
 
+    @Builder
+    public UserEntity(String name, Long point) {
+        this.name = name;
+        this.point = point;
+    }
 
     public void chargePoint(Long point) {
         if (point <= 0) {
