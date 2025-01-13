@@ -23,7 +23,7 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
     List<TokenEntity> findByStatusIn(@Param("statuses") List<TokenStatus> statuses);
 
     // PENDING 상태의 토큰 중에서 가장 오래된 N개의 토큰을 조회
-    @Query("SELECT t FROM TokenEntity t WHERE t.status IN :statuses ORDER BY t.expiredAt")
-    Page<TokenEntity> findTopNByTokenStatusOrderByExpiredAtAsc(@Param("statuses") List<TokenStatus> statuses, Pageable pageable);
+    @Query("SELECT t FROM TokenEntity t WHERE t.status = 'PENDING' ORDER BY t.expiredAt")
+    Page<TokenEntity> findTokensToActivate(Pageable pageable);
 
 }//end

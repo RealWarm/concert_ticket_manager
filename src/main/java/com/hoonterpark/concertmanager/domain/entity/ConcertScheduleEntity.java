@@ -24,6 +24,7 @@ public class ConcertScheduleEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime performanceDay;
 
+    
     // 단위 테스트용
     @Builder
     public ConcertScheduleEntity(Long id, Long concertId, LocalDateTime performanceDay) {

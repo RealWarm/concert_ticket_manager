@@ -21,6 +21,6 @@ public interface TokenRepository {
     // 구현에서 페이저블 쓰기
     // findTopLIMIT_ACTIVATE_USERByTokenStatusOrderByExpiredAtAsc(TokenStatus.PENDING, pageable);
     // Pageable pageable = PageRequest.of(0, N);
-    List<TokenEntity> findTopNByTokenStatusOrderByExpiredAtAsc(List<TokenStatus> pending, int Limit);
+    List<TokenEntity> findTokensToActivate(int Limit);
 
 }
