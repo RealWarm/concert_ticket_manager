@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class TokenUseCase {
     private final UserService userService;
@@ -22,9 +21,7 @@ public class TokenUseCase {
 
 
     // 신규 토큰 발행
-    public TokenResponse.TokenQueueResponse issueToken(UserTokenRequest request) {
-        Long userId = request.getUserId();
-        LocalDateTime now = request.getNow();
+    public TokenResponse.Token issueToken(Long userId, LocalDateTime now) {
 
         // 유저의 아이디가 유효한지 확인한다
         userService.findById(userId);
@@ -33,18 +30,18 @@ public class TokenUseCase {
         TokenEntity newToken = tokenService.makeToken(now);
         int waitingNumber = tokenService.getWaitingNumber(newToken.getTokenValue());
 
-        return new TokenResponse.TokenQueueResponse(newToken.getTokenValue(), waitingNumber);
+        return new TokenResponse.Token(newToken.getTokenValue(), waitingNumber);
     }//issueToken
 
 
     // 토큰및 대기열 반환
     public TokenResponse.TokenQueueResponse getQueueToken(String tokenValue){
         // 토큰이 존재하나 확인
-        tokenService.getToken(tokenValue);
+        TokenEntity token = tokenService.getToken(tokenValue);
 
         // 토큰 대기열 반환
         int waitingNumber = tokenService.getWaitingNumber(tokenValue);
-        return new TokenResponse.TokenQueueResponse(tokenValue, waitingNumber);
+        return new TokenResponse.TokenQueueResponse(token.getStatus(), waitingNumber);
     }//getQueueToken
 
 

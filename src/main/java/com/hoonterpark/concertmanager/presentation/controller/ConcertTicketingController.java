@@ -1,5 +1,7 @@
 package com.hoonterpark.concertmanager.presentation.controller;
 
+import com.hoonterpark.concertmanager.application.TokenUseCase;
+import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.presentation.controller.request.ChargeBalanceRequest;
 import com.hoonterpark.concertmanager.presentation.controller.request.PaymentRequest;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
@@ -7,6 +9,8 @@ import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenR
 import com.hoonterpark.concertmanager.presentation.controller.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +19,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@RestController
-@RequestMapping("/api")
 @Tag(name = "콘서트 컨트롤러", description = "콘서트 정보, 토큰, 예약, 결제, 충전 기능 다합쳐 있음 5주차에 분리예정")
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class ConcertTicketingController {
+    private final TokenUseCase tokenUseCase;
+
 
 
     @PostMapping("/token")
@@ -27,13 +34,14 @@ public class ConcertTicketingController {
     public ResponseEntity<CommonResponse<TokenResponse.Token>> issueToken(
             @RequestBody UserTokenRequest request
     ) {
-        TokenResponse.Token dto = new TokenResponse.Token("TokenValue");
+        log.info("request :: {} ", request);
+//        TokenResponse.Token dto = new TokenResponse.Token("TokenValue", 11);
 
         CommonResponse<TokenResponse.Token> response = new CommonResponse<>();
         response.setResult("200");
         response.setMessage("Success");
-        response.setData(dto);
-
+        response.setData(tokenUseCase.issueToken(request.getUserId(), LocalDateTime.now()));
+        log.info(response.toString());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }//issueToken
 
@@ -43,7 +51,7 @@ public class ConcertTicketingController {
     public ResponseEntity<TokenResponse.TokenQueueResponse> getQueueToken(
             @RequestParam String tokenValue
     ){
-        return new ResponseEntity<>(new TokenResponse.TokenQueueResponse(tokenValue, 11), HttpStatus.OK);
+        return new ResponseEntity<>(new TokenResponse.TokenQueueResponse(TokenStatus.PENDING, 11), HttpStatus.OK);
     }
 
 

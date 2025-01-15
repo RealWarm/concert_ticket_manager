@@ -40,7 +40,6 @@ public class TokenUseCaseIntegrationTest {
         MockitoAnnotations.openMocks(this);
         userTokenRequest = new UserTokenRequest();
         userTokenRequest.setUserId(1L);
-        userTokenRequest.setNow(LocalDateTime.now());
     }
 
     @Test
@@ -57,7 +56,7 @@ public class TokenUseCaseIntegrationTest {
         when(tokenService.getWaitingNumber(anyString())).thenReturn(0); // Mock waiting number
 
         // When
-        TokenResponse.TokenQueueResponse response = tokenUseCase.issueToken(userTokenRequest);
+        TokenResponse.Token response = tokenUseCase.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
 
         // Then
         assertThat(response).isNotNull();
@@ -82,7 +81,7 @@ public class TokenUseCaseIntegrationTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.token()).isEqualTo("token-value");
+        assertThat(response.tokenStatus()).isEqualTo(TokenStatus.ACTIVE);
         assertThat(response.queuePosition()).isEqualTo(1);
     }
 

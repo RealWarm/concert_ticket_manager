@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager.presentation.common;
+package com.hoonterpark.concertmanager.common;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

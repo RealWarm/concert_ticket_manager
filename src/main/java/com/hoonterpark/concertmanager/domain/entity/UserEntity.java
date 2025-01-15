@@ -5,13 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
 
@@ -31,9 +29,16 @@ public class UserEntity {
     }
 
     @Builder
-    public UserEntity(String name, Long point) {
+    private UserEntity(String name, Long point) {
         this.name = name;
         this.point = point;
+    }
+
+    public static UserEntity create(String name){
+        return UserEntity.builder()
+                .name(name)
+                .point(0L)
+                .build();
     }
 
     public void chargePoint(Long point) {

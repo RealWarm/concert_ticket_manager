@@ -9,6 +9,4 @@ import java.time.LocalDateTime;
 public class UserTokenRequest {
     private Long userId;
 
-    @JsonIgnore
-    private LocalDateTime now;
 }

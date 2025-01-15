@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class ConcertUseCase {
     private final TokenService tokenService;

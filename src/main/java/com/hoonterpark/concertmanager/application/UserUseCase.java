@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class UserUseCase {
     private final UserService userService;

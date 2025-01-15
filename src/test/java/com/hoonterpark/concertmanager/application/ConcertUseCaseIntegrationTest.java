@@ -143,4 +143,5 @@ public class ConcertUseCaseIntegrationTest {
                 .hasMessage("존재하지 않는 토큰 입니다."); // 예외 메시지 확인
     }
 
-}
+
+}//end

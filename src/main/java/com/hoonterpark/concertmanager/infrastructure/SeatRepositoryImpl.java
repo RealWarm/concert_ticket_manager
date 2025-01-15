@@ -32,6 +32,11 @@ public class SeatRepositoryImpl implements SeatRepository {
         return seatJpaRepository.findById(id);
     }
 
+    @Override
+    public Optional<SeatEntity> findByIdWithLock(Long id) {
+        return seatJpaRepository.findByIdWithLock(id);
+    }
+
 
     @Override
     public Optional<SeatEntity> findBySeatNumber(String seatNumber) {

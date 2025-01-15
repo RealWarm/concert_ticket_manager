@@ -10,14 +10,15 @@ import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
 import com.hoonterpark.concertmanager.presentation.controller.response.ReservationResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 
+@Slf4j
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class ReservationUsecase {
     private final UserService userService;
@@ -31,20 +32,25 @@ public class ReservationUsecase {
             ReservationRequest request,
             LocalDateTime now
     ){
+        log.info("reserveSeat invoked!!! {} ", request.toString());
         // 유저 정보 확인
         userService.findById(request.getUserId());
+//        log.info("user Check ");
 
-        // 토큰검증
+        // 토큰검증 >> 인터셉터로 빼기?
         TokenEntity active = tokenService.isActive(request.getToken(), now);
-
-        // 토큰을 예약상태로 변경
-        active.updateTokenToReserved(now);
+//        log.info("Token check {} ", active);
 
         // 좌석예약하기
         SeatEntity seatEntity = seatService.reserveSeat(request.getSeatId(), now);
+//        log.info("Seat Check {} ", seatEntity);
 
         // 예약 내역 만들기
         ReservationEntity reservation = reservationService.makeReservation(request, seatEntity.getSeatPrice(), now);
+//        log.info("reservation Check {}", reservation);
+
+        // 토큰을 예약상태로 변경
+        active.updateTokenToReserved(now);
 
         return new ReservationResponse.Reservation(reservation.getId());
     }//reserveSeat

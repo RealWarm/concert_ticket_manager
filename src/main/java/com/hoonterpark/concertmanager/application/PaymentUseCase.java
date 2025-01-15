@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class PaymentUseCase {
     private final UserService userService;

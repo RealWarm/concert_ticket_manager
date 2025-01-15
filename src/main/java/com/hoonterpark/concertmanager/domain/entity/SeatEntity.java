@@ -3,15 +3,13 @@ package com.hoonterpark.concertmanager.domain.entity;
 
 import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SeatEntity extends BaseEntity {
 
@@ -33,12 +31,22 @@ public class SeatEntity extends BaseEntity {
     private LocalDateTime expiredAt;
 
     @Builder
-    public SeatEntity(Long concertScheduleId, String seatNumber, SeatStatus status, Long seatPrice, LocalDateTime expiredAt) {
+    private SeatEntity(Long concertScheduleId, String seatNumber, SeatStatus status, Long seatPrice, LocalDateTime expiredAt) {
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.status = status;
         this.seatPrice = seatPrice;
         this.expiredAt = expiredAt;
+    }
+
+    public static SeatEntity create(Long concertScheduleId, String seatNumber, Long seatPrice, LocalDateTime now){
+        return SeatEntity.builder()
+                .concertScheduleId(concertScheduleId)
+                .seatNumber(seatNumber)
+                .status(SeatStatus.AVAILABLE)
+                .seatPrice(seatPrice)
+                .expiredAt(now.plusMinutes(10)) // 테스트의 편의를 위해 변수로 뺌
+                .build();
     }
 
     // 좌석 예약하기 :: AVAILABLE인지 확인 후 RESERVED로 상태 변환

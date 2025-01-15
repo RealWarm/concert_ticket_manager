@@ -1,9 +1,8 @@
 package com.hoonterpark.concertmanager.presentation.controller.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+@ToString
 @Getter
 @Builder
 @AllArgsConstructor

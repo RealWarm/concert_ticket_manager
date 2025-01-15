@@ -89,4 +89,6 @@ public class UserUseCaseIntegrationTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 유저 입니다."); // 예외 메시지 확인
     }
+
+
 }
