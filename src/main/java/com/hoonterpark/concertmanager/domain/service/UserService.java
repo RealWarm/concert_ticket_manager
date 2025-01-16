@@ -1,8 +1,8 @@
 package com.hoonterpark.concertmanager.domain.service;
 
 
-import com.hoonterpark.concertmanager.common.CustomException;
-import com.hoonterpark.concertmanager.common.ErrorCode;
+import com.hoonterpark.concertmanager.common.error.CustomException;
+import com.hoonterpark.concertmanager.common.error.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
