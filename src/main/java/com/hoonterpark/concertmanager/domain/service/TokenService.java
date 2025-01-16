@@ -5,6 +5,7 @@ import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TokenService {
     private final int LIMIT_ACTIVATE_USER = 30;
@@ -23,20 +25,7 @@ public class TokenService {
 
     // 토큰을 발행한다
     public TokenEntity makeToken(LocalDateTime now) {
-        return tokenRepository.save(makeToken(now, TOKEN_ACTIVE_TIME));
-    }//issueToken
-
-    // 빌더가 안티패턴이라고 생각함
-    // 엔티티 생성은 Entity안에 넣으면 Non-static 에러가 떠서 안됨
-    // 그래서 아래와 같은 생성 함수로 작성함
-    public TokenEntity makeToken(LocalDateTime now, int tokenActiveTime){
-        UUID uuid4 = UUID.randomUUID();
-        TokenEntity newToken = TokenEntity.builder()
-                .status(TokenStatus.PENDING)
-                .tokenValue(uuid4.toString())
-                .expiredAt(now.plusMinutes(tokenActiveTime))
-                .build();
-        return newToken;
+        return tokenRepository.save(TokenEntity.create(now, TOKEN_ACTIVE_TIME));
     }//issueToken
 
     // 토큰검증

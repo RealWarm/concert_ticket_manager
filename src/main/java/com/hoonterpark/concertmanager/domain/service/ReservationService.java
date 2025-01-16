@@ -1,6 +1,8 @@
 package com.hoonterpark.concertmanager.domain.service;
 
 
+import com.hoonterpark.concertmanager.common.CustomException;
+import com.hoonterpark.concertmanager.common.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
 import com.hoonterpark.concertmanager.domain.repository.ReservationRepository;
@@ -12,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 
 
 @Service
@@ -27,33 +28,28 @@ public class ReservationService {
             ReservationRequest request,
             Long seatPrice,
             LocalDateTime now
-    ){
+    ) {
         Long userId = request.getUserId();
         Long seatId = request.getSeatId();
         Long concertScheduleId = request.getConcertScheduleId();
+
         Optional<ReservationEntity> reservation = reservationRepository
-                                                    .findByUserIdAndConcertScheduleId(userId, concertScheduleId);
-        if(reservation.isPresent()){
+                .findByUserIdAndConcertScheduleId(userId, concertScheduleId);
+
+        if (reservation.isPresent()) {
             throw new RuntimeException("예약 내역이 이미 있습니다.");
         }//if
 
-        ReservationEntity newReservation = ReservationEntity.builder()
-                .userId(userId)
-                .concertScheduleId(concertScheduleId)
-                .seatId(seatId)
-                .totalPrice(seatPrice)
-                .expiredAt(now.plusMinutes(10))
-                .status(ReservationStatus.RESERVED)
-                .build();
+        ReservationEntity newReservation = ReservationEntity.create(userId, concertScheduleId, seatId, seatPrice, now);
 
         return reservationRepository.save(newReservation);
     }//makeReservation
 
 
     // 결제한다.
-    public ReservationEntity payForReservation(Long reservationId, LocalDateTime now){
-        ReservationEntity reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("예약 내역이 없습니다."));
+    public ReservationEntity payForReservation(Long reservationId, LocalDateTime now) {
+        ReservationEntity reservation = reservationRepository.findByIdWithLock(reservationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "예약이 존재하지 않습니다."));
 
         return reservationRepository.save(reservation.payForReservation(now));
     }//payForReservation

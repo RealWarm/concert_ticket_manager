@@ -40,7 +40,7 @@ public class SeatService {
 
     // 1개의 좌석예약하기 By SeatId
     public SeatEntity reserveSeat(Long seatId, LocalDateTime now){
-        SeatEntity toReserveSeat = seatRepository.findById(seatId)
+        SeatEntity toReserveSeat = seatRepository.findByIdWithLock(seatId)
                 .orElseThrow(() -> new IllegalArgumentException("해당좌석은 없는 좌석입니다."));
         return seatRepository.save(toReserveSeat.reserveSeat(now));
     }

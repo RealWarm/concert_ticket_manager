@@ -41,7 +41,6 @@ public class ReservationServiceIntegrationTest {
                 .userId(1L)
                 .concertScheduleId(1L)
                 .seatId(1L)
-                .token("sample-token")
                 .build();
     }
 
