@@ -1,12 +1,10 @@
 package com.hoonterpark.concertmanager.domain.service;
 
 
-import com.hoonterpark.concertmanager.common.CustomException;
-import com.hoonterpark.concertmanager.common.ErrorCode;
+import com.hoonterpark.concertmanager.common.error.CustomException;
+import com.hoonterpark.concertmanager.common.error.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
-import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
 import com.hoonterpark.concertmanager.domain.repository.ReservationRepository;
-import com.hoonterpark.concertmanager.presentation.controller.request.PaymentRequest;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
