@@ -1,13 +1,16 @@
 package com.hoonterpark.concertmanager.presentation.controller.response;
 
+import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
+
 public class TokenResponse {
 
     public record Token(
-            String token
+            String token,
+            Integer queuePosition
     ) { }
 
     public record TokenQueueResponse(
-            String token,
+            TokenStatus tokenStatus,
             Integer queuePosition
     ) { }
 

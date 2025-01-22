@@ -22,10 +22,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class TokenUseCaseIntegrationTest {
+public class TokenFacadeIntegrationTest {
 
     @InjectMocks
-    private TokenUseCase tokenUseCase;
+    private TokenFacade tokenFacade;
 
     @Mock
     private UserService userService;
@@ -40,7 +40,6 @@ public class TokenUseCaseIntegrationTest {
         MockitoAnnotations.openMocks(this);
         userTokenRequest = new UserTokenRequest();
         userTokenRequest.setUserId(1L);
-        userTokenRequest.setNow(LocalDateTime.now());
     }
 
     @Test
@@ -57,7 +56,7 @@ public class TokenUseCaseIntegrationTest {
         when(tokenService.getWaitingNumber(anyString())).thenReturn(0); // Mock waiting number
 
         // When
-        TokenResponse.TokenQueueResponse response = tokenUseCase.issueToken(userTokenRequest);
+        TokenResponse.Token response = tokenFacade.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
 
         // Then
         assertThat(response).isNotNull();
@@ -78,18 +77,18 @@ public class TokenUseCaseIntegrationTest {
         when(tokenService.getWaitingNumber(anyString())).thenReturn(1); // Mock waiting number
 
         // When
-        TokenResponse.TokenQueueResponse response = tokenUseCase.getQueueToken("token-value");
+        TokenResponse.TokenQueueResponse response = tokenFacade.getQueueToken("token-value");
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.token()).isEqualTo("token-value");
+        assertThat(response.tokenStatus()).isEqualTo(TokenStatus.ACTIVE);
         assertThat(response.queuePosition()).isEqualTo(1);
     }
 
     @Test
     public void testGetQueueToken_NotFound() {
         // When & Then
-        assertThatThrownBy(() -> tokenUseCase.getQueueToken("invalid-token-value"))
+        assertThatThrownBy(() -> tokenFacade.getQueueToken("invalid-token-value"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 토큰 입니다.");
     }
@@ -97,7 +96,7 @@ public class TokenUseCaseIntegrationTest {
     @Test
     public void testExpireToken() {
         // When
-        tokenUseCase.expireToken(LocalDateTime.now().plusMinutes(1));
+        tokenFacade.expireToken(LocalDateTime.now().plusMinutes(1));
         // Then
         verify(tokenService).expireToken(any());
     }
@@ -108,7 +107,7 @@ public class TokenUseCaseIntegrationTest {
         // No specific setup needed for this test
 
         // When
-        tokenUseCase.activateToken(LocalDateTime.now().plusMinutes(1));
+        tokenFacade.activateToken(LocalDateTime.now().plusMinutes(1));
 
         // Then
         verify(tokenService).activateToken(any());

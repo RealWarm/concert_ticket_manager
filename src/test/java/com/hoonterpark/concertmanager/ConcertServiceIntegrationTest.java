@@ -6,6 +6,7 @@ import com.hoonterpark.concertmanager.domain.enums.ConcertStatus;
 import com.hoonterpark.concertmanager.domain.repository.ConcertRepository;
 import com.hoonterpark.concertmanager.domain.repository.ConcertScheduleRepository;
 import com.hoonterpark.concertmanager.domain.service.ConcertService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
-
+@Slf4j
 @Transactional // 각 테스트 후 롤백
 @SpringBootTest
 public class ConcertServiceIntegrationTest {
@@ -88,8 +89,9 @@ public class ConcertServiceIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
 
         // When
-        List<ConcertScheduleEntity> availableSchedules = concertService.findAvailableConcertSchedules(concertId, now);
 
+        List<ConcertScheduleEntity> availableSchedules = concertService.findAvailableConcertSchedules(concertId, now);
+        log.info(concertScheduleRepository.findById(1L).get().toString());
         // Then
         assertThat(availableSchedules).isNotEmpty();
         assertThat(availableSchedules.get(0).getConcertId()).isEqualTo(concertId);

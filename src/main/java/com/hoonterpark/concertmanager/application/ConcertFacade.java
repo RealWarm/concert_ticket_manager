@@ -4,14 +4,12 @@ package com.hoonterpark.concertmanager.application;
 import com.hoonterpark.concertmanager.domain.entity.ConcertEntity;
 import com.hoonterpark.concertmanager.domain.entity.ConcertScheduleEntity;
 import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
-import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.service.ConcertService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,9 +17,8 @@ import java.util.stream.Collectors;
 
 
 @Component
-@Transactional
 @RequiredArgsConstructor
-public class ConcertUseCase {
+public class ConcertFacade {
     private final TokenService tokenService;
     private final ConcertService concertService;
     private final SeatService seatService;

@@ -13,6 +13,8 @@ public interface ReservationRepository {
 
     Optional<ReservationEntity> findById(Long id);
 
+    Optional<ReservationEntity> findByIdWithLock(Long id);
+
     List<ReservationEntity> findByUserId(Long userId);
 
     Optional<ReservationEntity> findByUserIdAndConcertScheduleId(Long userId, Long concertScheduleId);

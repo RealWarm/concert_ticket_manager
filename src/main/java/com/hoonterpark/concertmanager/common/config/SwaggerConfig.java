@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager.presentation.common;
+package com.hoonterpark.concertmanager.common;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -18,7 +18,7 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("API Test") // API의 제목
-                .description("Let's practice Swagger UI") // API에 대한 설명
+                .description("Hhplus Concert Ticketing Swagger UI") // API에 대한 설명
                 .version("1.0.0"); // API의 버전
     }
 }
