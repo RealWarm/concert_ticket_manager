@@ -17,7 +17,11 @@ public interface UserRepository {
     // id로 검색
     Optional<UserEntity> findById(Long id);
 
+    Optional<UserEntity> findByIdWithLock(Long id);
+
     // 이름으로 검색
     List<UserEntity> findByName(String name);
+
+
 
 }

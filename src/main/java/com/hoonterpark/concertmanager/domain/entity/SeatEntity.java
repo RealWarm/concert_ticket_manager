@@ -30,6 +30,9 @@ public class SeatEntity extends BaseEntity {
 
     private LocalDateTime expiredAt;
 
+    @Version
+    private int version;
+
     @Builder
     private SeatEntity(Long concertScheduleId, String seatNumber, SeatStatus status, Long seatPrice, LocalDateTime expiredAt) {
         this.concertScheduleId = concertScheduleId;

@@ -1,10 +1,7 @@
 package com.hoonterpark.concertmanager.domain.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -20,6 +17,9 @@ public class UserEntity {
     private String name;
 
     private Long point=0L;
+
+    @Version
+    private int version;
 
     @Builder
     public UserEntity(Long id, String name, Long point) {
