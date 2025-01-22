@@ -66,14 +66,14 @@ public class SeatEntity extends BaseEntity {
     // RESERVED 좌석이고 만료기한이 지나지 않았다면 예매
     public SeatEntity payForSeat(LocalDateTime now) {
         if (this.status == SeatStatus.RESERVED) {
-            if (this.expiredAt.isBefore(now)) {
+            if (this.expiredAt.isAfter(now)) {
                 this.status = SeatStatus.PAID;
                 // return true;
             } else {
                 // 아래 에러때문에 반영이 안될거 같은데...
                 // 스케줄러가 잡아 주긴함
                 this.status = SeatStatus.AVAILABLE;
-                throw new RuntimeException("유효시간이 지났습니다.");
+                throw new RuntimeException("결제 유효시간이 지났습니다.");
                 // return false;
             }//if-2
         } else {

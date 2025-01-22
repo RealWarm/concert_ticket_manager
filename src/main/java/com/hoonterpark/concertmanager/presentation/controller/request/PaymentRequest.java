@@ -9,6 +9,5 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class PaymentRequest {
-    private String token;
     private Long reservationId;
 }

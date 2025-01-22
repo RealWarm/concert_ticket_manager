@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class ReservationRequest {
-    private String token;
     private Long concertScheduleId;
     private Long seatId;
     private Long userId;

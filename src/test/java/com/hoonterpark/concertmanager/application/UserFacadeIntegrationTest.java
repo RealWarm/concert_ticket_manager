@@ -10,17 +10,16 @@ import com.hoonterpark.concertmanager.presentation.controller.response.UserBalan
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
 @SpringBootTest
-public class UserUseCaseIntegrationTest {
+public class UserFacadeIntegrationTest {
 
     @Autowired
-    private UserUseCase userUseCase;
+    private UserFacade userFacade;
 
     @Autowired
     private UserService userService;
@@ -43,7 +42,7 @@ public class UserUseCaseIntegrationTest {
     @Test
     public void testGetUserBalance() {
         // When
-        UserBalanceResponse response = userUseCase.getUserBalance(user.getId());
+        UserBalanceResponse response = userFacade.getUserBalance(user.getId());
 
         // Then
         assertThat(response).isNotNull();
@@ -56,7 +55,7 @@ public class UserUseCaseIntegrationTest {
         Long chargeAmount = 500L;
 
         // When
-        UserBalanceResponse response = userUseCase.chargeUserPoint(user.getId(), chargeAmount);
+        UserBalanceResponse response = userFacade.chargeUserPoint(user.getId(), chargeAmount);
 
         // Then
         assertThat(response).isNotNull();
@@ -73,7 +72,7 @@ public class UserUseCaseIntegrationTest {
         Long chargeAmount = -100L; // 잘못된 포인트 충전 금액
 
         // When & Then
-        assertThatThrownBy(() -> userUseCase.chargeUserPoint(user.getId(), chargeAmount))
+        assertThatThrownBy(() -> userFacade.chargeUserPoint(user.getId(), chargeAmount))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("포인트 충전은 0보다 커야합니다."); // 예외 메시지 확인
     }
@@ -85,7 +84,7 @@ public class UserUseCaseIntegrationTest {
         Long chargeAmount = 500L;
 
         // When & Then
-        assertThatThrownBy(() -> userUseCase.chargeUserPoint(nonExistentUserId, chargeAmount))
+        assertThatThrownBy(() -> userFacade.chargeUserPoint(nonExistentUserId, chargeAmount))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 유저 입니다."); // 예외 메시지 확인
     }

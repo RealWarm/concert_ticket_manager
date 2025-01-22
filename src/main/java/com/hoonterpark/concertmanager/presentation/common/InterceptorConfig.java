@@ -9,15 +9,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
-//    @Autowired
-//    private TokenInterceptor tokenInterceptor;
-//
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry){
-//        registry.addInterceptor(tokenInterceptor)
-//                .addPathPatterns()
-//                .addPathPatterns("/**") // 모든 경로에 대해 인터셉터 적용
-//                .excludePathPatterns("/api/public/**"); // 특정 경로 제외
-//    }
+    @Autowired
+    private TokenInterceptor tokenInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry){
+        registry.addInterceptor(tokenInterceptor)
+                .addPathPatterns()
+                .addPathPatterns("/**") // 모든 경로에 대해 인터셉터 적용
+                .excludePathPatterns("/api/public/**"); // 특정 경로 제외
+    }
 
 }

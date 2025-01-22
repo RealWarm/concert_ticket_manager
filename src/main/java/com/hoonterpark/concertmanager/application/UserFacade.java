@@ -5,13 +5,11 @@ import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.response.UserBalanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Component
 @RequiredArgsConstructor
-public class UserUseCase {
+public class UserFacade {
     private final UserService userService;
 
     // 고객 정보조회 == 포인트 조회

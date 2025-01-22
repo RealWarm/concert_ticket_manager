@@ -4,18 +4,16 @@ package com.hoonterpark.concertmanager.application;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenRequest;
 import com.hoonterpark.concertmanager.presentation.controller.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 
 @Component
 @RequiredArgsConstructor
-public class TokenUseCase {
+public class TokenFacade {
     private final UserService userService;
     private final TokenService tokenService;
 

@@ -12,7 +12,6 @@ import com.hoonterpark.concertmanager.presentation.controller.response.Reservati
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +19,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ReservationUsecase {
+public class ReservationFacade {
     private final UserService userService;
     private final TokenService tokenService;
     private final SeatService seatService;
@@ -30,15 +29,23 @@ public class ReservationUsecase {
     // 콘서트 예약
     public ReservationResponse.Reservation reserveSeat(
             ReservationRequest request,
+            String token,
             LocalDateTime now
     ){
         log.info("reserveSeat invoked!!! {} ", request.toString());
         // 유저 정보 확인
+        log.info("userId {} ", request.getUserId());
         userService.findById(request.getUserId());
 //        log.info("user Check ");
 
+<<<<<<< HEAD:src/main/java/com/hoonterpark/concertmanager/application/ReservationUsecase.java
         // 토큰검증 >> 인터셉터로 빼기?
         TokenEntity active = tokenService.isActive(request.getToken(), now);
+=======
+
+        // 토큰검증 >> 인터셉터로 빼기?
+        TokenEntity active = tokenService.isActive(token, now);
+>>>>>>> main:src/main/java/com/hoonterpark/concertmanager/application/ReservationFacade.java
 //        log.info("Token check {} ", active);
 
         // 좌석예약하기

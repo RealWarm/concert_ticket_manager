@@ -41,6 +41,13 @@ public class UserEntity {
                 .build();
     }
 
+    public static UserEntity create(String name, Long point){
+        return UserEntity.builder()
+                .name(name)
+                .point(point)
+                .build();
+    }
+
     public void chargePoint(Long point) {
         if (point <= 0) {
             throw new IllegalArgumentException("포인트 충전은 0보다 커야합니다.");

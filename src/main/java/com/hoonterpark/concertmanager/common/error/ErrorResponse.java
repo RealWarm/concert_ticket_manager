@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager.common;
+package com.hoonterpark.concertmanager.common.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
