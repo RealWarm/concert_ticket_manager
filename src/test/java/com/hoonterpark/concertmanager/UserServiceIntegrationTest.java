@@ -110,4 +110,5 @@ public class UserServiceIntegrationTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("포인트 사용은 0원 이상만 가능합니다."); // 예외 메시지 확인
     }
+
 }

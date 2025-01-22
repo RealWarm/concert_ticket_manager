@@ -3,10 +3,7 @@ package com.hoonterpark.concertmanager.domain.entity;
 
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -16,6 +13,7 @@ import java.util.UUID;
 @Slf4j
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenEntity extends BaseEntity {
 
@@ -42,10 +40,19 @@ public class TokenEntity extends BaseEntity {
     }
 
     @Builder
-    public TokenEntity(TokenStatus status, String tokenValue, LocalDateTime expiredAt) {
+    private TokenEntity(TokenStatus status, String tokenValue, LocalDateTime expiredAt) {
         this.status = status;
         this.tokenValue = tokenValue;
         this.expiredAt = expiredAt;
+    }
+
+    public static TokenEntity create(LocalDateTime now, int tokenActiveTime){
+        UUID uuid4 = UUID.randomUUID();
+        return TokenEntity.builder()
+                .status(TokenStatus.PENDING)
+                .tokenValue(uuid4.toString())
+                .expiredAt(now.plusMinutes(tokenActiveTime))
+                .build();
     }
 
 

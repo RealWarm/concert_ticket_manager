@@ -2,16 +2,15 @@ package com.hoonterpark.concertmanager.domain.entity;
 
 
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
+import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationEntity {
 
@@ -48,10 +47,21 @@ public class ReservationEntity {
         this.status = status;
     }
 
+    public static ReservationEntity create(Long userId, Long concertScheduleId, Long seatId, Long totalPrice, LocalDateTime now){
+       return ReservationEntity.builder()
+               .userId(userId)
+               .concertScheduleId(concertScheduleId)
+               .seatId(seatId)
+               .totalPrice(totalPrice)
+               .expiredAt(now.plusMinutes(10))
+               .status(ReservationStatus.RESERVED)
+               .build();
+    }
+
     // RESERVED의 상태의 예약 && 유효시간이 아직 안지났으면
     public ReservationEntity payForReservation(LocalDateTime now){
         if(this.status==ReservationStatus.RESERVED){
-            if(this.expiredAt.isBefore(now)){
+            if(this.expiredAt.isAfter(now)){
                 this.status=ReservationStatus.PAID;
             }else{
                 // 유효시간 만료

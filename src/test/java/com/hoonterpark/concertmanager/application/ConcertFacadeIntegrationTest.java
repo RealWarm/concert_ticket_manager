@@ -28,12 +28,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY) // H2 데이터베이스 사용
 @Transactional // 각 테스트 후 롤백
-public class ConcertUseCaseIntegrationTest {
+public class ConcertFacadeIntegrationTest {
 
     @Autowired
-    private ConcertUseCase concertUseCase;
+    private ConcertFacade concertFacade;
 
     @Autowired
     private TokenService tokenService;
@@ -90,7 +89,7 @@ public class ConcertUseCaseIntegrationTest {
     @Test
     public void testGetConcert() {
         // When
-        List<ConcertResponse.Concert> concerts = concertUseCase.getConcert();
+        List<ConcertResponse.Concert> concerts = concertFacade.getConcert();
 
         // Then
         assertThat(concerts).isNotEmpty();
@@ -104,7 +103,7 @@ public class ConcertUseCaseIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
 
         // When
-        List<ConcertResponse.ConcertDate> concertDates = concertUseCase.getConcertDate(concertId, now);
+        List<ConcertResponse.ConcertDate> concertDates = concertFacade.getConcertDate(concertId, now);
 
         // Then
         assertThat(concertDates).isNotEmpty();
@@ -121,7 +120,7 @@ public class ConcertUseCaseIntegrationTest {
         when(tokenService.isActive(any(String.class), any(LocalDateTime.class))).thenReturn(new TokenEntity(1L, TokenStatus.ACTIVE, "testToken", LocalDateTime.now().plusMinutes(10)));
 
         // When
-        List<ConcertResponse.ConcertSeat> concertSeats = concertUseCase.getConcertSeat(concertSchedule.getId(), tokenValue, now);
+        List<ConcertResponse.ConcertSeat> concertSeats = concertFacade.getConcertSeat(concertSchedule.getId(), tokenValue, now);
 
         // Then
         assertThat(concertSeats).isNotEmpty();
@@ -138,9 +137,10 @@ public class ConcertUseCaseIntegrationTest {
         String invalidToken = "invalid-token";
 
         // When & Then
-        assertThatThrownBy(() -> concertUseCase.getConcertSeat(concertScheduleId, invalidToken, now))
+        assertThatThrownBy(() -> concertFacade.getConcertSeat(concertScheduleId, invalidToken, now))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 토큰 입니다."); // 예외 메시지 확인
     }
 
-}
+
+}//end
