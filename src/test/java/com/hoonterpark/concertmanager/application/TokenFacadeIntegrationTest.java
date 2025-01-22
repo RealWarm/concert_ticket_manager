@@ -56,7 +56,11 @@ public class TokenFacadeIntegrationTest {
         when(tokenService.getWaitingNumber(anyString())).thenReturn(0); // Mock waiting number
 
         // When
+<<<<<<< HEAD:src/test/java/com/hoonterpark/concertmanager/application/TokenUseCaseIntegrationTest.java
+        TokenResponse.Token response = tokenUseCase.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
+=======
         TokenResponse.Token response = tokenFacade.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
+>>>>>>> main:src/test/java/com/hoonterpark/concertmanager/application/TokenFacadeIntegrationTest.java
 
         // Then
         assertThat(response).isNotNull();

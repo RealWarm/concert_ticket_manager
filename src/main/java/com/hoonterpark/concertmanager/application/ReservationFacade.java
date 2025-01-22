@@ -32,13 +32,20 @@ public class ReservationFacade {
             String token,
             LocalDateTime now
     ){
+        log.info("reserveSeat invoked!!! {} ", request.toString());
         // 유저 정보 확인
         log.info("userId {} ", request.getUserId());
         userService.findById(request.getUserId());
+//        log.info("user Check ");
 
+<<<<<<< HEAD:src/main/java/com/hoonterpark/concertmanager/application/ReservationUsecase.java
+        // 토큰검증 >> 인터셉터로 빼기?
+        TokenEntity active = tokenService.isActive(request.getToken(), now);
+=======
 
         // 토큰검증 >> 인터셉터로 빼기?
         TokenEntity active = tokenService.isActive(token, now);
+>>>>>>> main:src/main/java/com/hoonterpark/concertmanager/application/ReservationFacade.java
 //        log.info("Token check {} ", active);
 
         // 좌석예약하기

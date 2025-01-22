@@ -1,5 +1,6 @@
 package com.hoonterpark.concertmanager.presentation.common;
 
+
 import com.hoonterpark.concertmanager.application.TokenFacade;
 import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.common.error.ErrorCode;
@@ -19,11 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class TokenInterceptor implements HandlerInterceptor {
     private final TokenFacade tokenFacade;
 
+
     // 요청 처리 전 실행되는 메서드
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestURI = request.getRequestURI();
-
 
         // 토큰 없이 요청 허용
         if (requestURI.equals("/api/token") ||
@@ -51,6 +52,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                 }//if-2
 
                 return true; // 토큰 활성 상태, 요청 권한 있음
+
             } catch (Exception e) {
                 log.error("토큰 검증 중 오류: {}", e.getMessage(), e);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
