@@ -33,9 +33,8 @@ public class ReservationFacade {
             LocalDateTime now
     ){
         // 유저 정보 확인
-        log.info("userId {} ", request.getUserId());
+        log.info("userId :: {} ", request.getUserId());
         userService.findById(request.getUserId());
-
 
         // 토큰검증 >> 인터셉터로 빼기?
         TokenEntity active = tokenService.isActive(token, now);

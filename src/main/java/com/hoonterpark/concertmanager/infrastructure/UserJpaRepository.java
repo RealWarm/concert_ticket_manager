@@ -1,6 +1,5 @@
 package com.hoonterpark.concertmanager.infrastructure;
 
-import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
+
     List<UserEntity> findByName(String name);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -20,4 +20,5 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select u from UserEntity u where u.id = :id")
     Optional<UserEntity> findByIdWithOptimisticLock(Long id);
+
 }

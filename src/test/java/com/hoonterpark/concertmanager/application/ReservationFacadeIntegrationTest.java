@@ -158,7 +158,6 @@ public class ReservationFacadeIntegrationTest {
 
 
     @DisplayName("10명의 유저가 하나의 좌석을 동시에 예약한다. 1명만 예약이되고 나머지는 에러를 내뱉는다.")
-    @Transactional
     @Test
     public void testReservationConcurrency() throws InterruptedException {
         // given
@@ -170,14 +169,16 @@ public class ReservationFacadeIntegrationTest {
         AtomicInteger successCnt = new AtomicInteger();
         AtomicInteger failCnt = new AtomicInteger();
 
-        // 10명의 유저 만들기 && 10개의 토큰 만들기 & 1개의 좌석 만들기
+        // 1개의 좌석 만들기
         SeatEntity seatA1 = seatRepository.save(SeatEntity.create(1L, "A1", 150000L, LocalDateTime.now()));
         List<TokenEntity> tokens = new ArrayList<>();
+        List<UserEntity> users = new ArrayList<>();
         List<ReservationRequest> requests = new ArrayList<>();
 
+        //  10명의 유저 만들기 && 10개의 토큰 만들기
         for (int i = 1; i <= threadCnt; i++) {
             UserEntity user = UserEntity.create("user" + i);
-            userRepository.save(user);
+            users.add(userRepository.save(user));
 
             TokenEntity tokenEntity = TokenEntity.create(LocalDateTime.now(), 10);
             tokenEntity.activateToken(LocalDateTime.now());
@@ -195,9 +196,9 @@ public class ReservationFacadeIntegrationTest {
             executorService.execute(() -> {
                 reservationFacade.reserveSeat(request, token, LocalDateTime.now());
                 try {
-
                     successCnt.getAndIncrement();
                 } catch (Exception e) {
+                    System.out.println("error !! " + e);
                     failCnt.getAndIncrement();
                 } finally {
                     latch.countDown();
@@ -214,3 +215,8 @@ public class ReservationFacadeIntegrationTest {
     }
 
 }
+//        log.info("{} :: \nuser: {} \ntoken: {}\nreqeust{}", users.get(i), tokens.get(i), requests.get(i));
+//        System.out.println(i + " :: \nuser:" + users.get(i) + " :: \ntoken: " + tokens.get(i) + "\nrequest: " + requests.get(i));
+//        System.out.println(i + " :: \nuser:" + userRepository.findById(users.get(i).getId())
+//        + " :: \ntoken: " + tokenRepository.findByTokenValue(tokens.get(i).getTokenValue())
+//        + "\nrequest: " + requests.get(i));
