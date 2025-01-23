@@ -18,7 +18,6 @@ public interface SeatRepository {
     // 좌석Id로 검색
     Optional<SeatEntity> findById(Long id);
 
-
     // 좌석명으로 검색
     Optional<SeatEntity> findBySeatNumber(String seatNumber);
 
