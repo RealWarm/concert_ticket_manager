@@ -132,6 +132,71 @@ public class ReservationFacadeIntegrationTest {
     }
 
     @Test
+    public void LockTest() throws InterruptedException {
+        // given
+        int threadCnt = 10;
+        int expectedSuccessCnt = 1;
+        int expectedFailCnt = 9;
+        CountDownLatch latch = new CountDownLatch(threadCnt);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCnt);
+        AtomicInteger successCnt = new AtomicInteger();
+        AtomicInteger failCnt = new AtomicInteger();
+
+        // 1개의 좌석생성
+        // SeatEntity seatA1 = seatRepository.save(SeatEntity.create(1L, "A1", 150000L, LocalDateTime.now()));
+
+        // 10명의 유저 || 10개의 토큰생성
+        List<Long> users = new ArrayList<>();
+        List<ReservationResponse.Reservation> responses = new ArrayList<>();
+        List<ReservationRequest> requests = new ArrayList<>();
+        List<TokenEntity> tokens = new ArrayList<>();
+
+        for (int i = 1; i <= 10; i++) {
+            System.out.println("@@@@@@@@@@@@@@ "+i);
+            UserEntity user = UserEntity.create("user" + i);
+            userRepository.save(user);
+
+            TokenEntity tokenEntity = TokenEntity.create(LocalDateTime.now(), 10);
+            tokenEntity.activateToken(LocalDateTime.now());
+            tokenRepository.save(tokenEntity);
+            tokens.add(tokenEntity);
+
+            SeatEntity seatA1 = seatRepository.save(SeatEntity.create(1L, "A1", 150000L, LocalDateTime.now()));
+
+            ReservationRequest request = new ReservationRequest(1L, seatA1.getId(), user.getId());
+            requests.add(request);
+            responses.add(reservationFacade.reserveSeat(request, tokenEntity.getTokenValue(), LocalDateTime.now()));
+        }
+        // 10명의 유저가 예약을한다 > 10개의 토큰생성
+        // 1명만 예약에 성공한다.
+
+//        // when
+//        for (int i = 0; i < threadCnt; i++) {
+//            ReservationRequest request = requests.get(i);
+//            String token = tokens.get(i).getTokenValue();
+//            executorService.execute(() -> {
+//                // reservationFacade.reserveSeat(request, token, LocalDateTime.now());
+//                reservationFacade.reserveSeat(request, token, LocalDateTime.now());
+//                try {
+//                    successCnt.getAndIncrement();
+//                } catch (Exception e) {
+//                    System.out.println("error !! " + e);
+//                    failCnt.getAndIncrement();
+//                } finally {
+//                    latch.countDown();
+//                }//try
+//            });
+//        }//for-i
+//
+//        latch.await();
+//        executorService.shutdown();
+
+//        Optional<ReservationEntity> byId = reservationRepository.findById(1L);
+//        assertThat(successCnt.get()).isEqualTo(expectedSuccessCnt);
+//        assertThat(failCnt.get()).isEqualTo(expectedFailCnt);
+    }
+
+    @Test
     public void testReleaseSeat() {
         // Given
         List<SeatEntity> seats = new ArrayList<>();
