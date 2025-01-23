@@ -39,4 +39,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
+    @Override
+    public Optional<UserEntity> findByIdWithLock(Long id) {
+        return userJpaRepository.findByIdWithLock(id);
+    }
+
+
 }

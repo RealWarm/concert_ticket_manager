@@ -13,12 +13,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
     List<UserEntity> findByName(String name);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select u from UserEntity u where u.id = :id")
-    Optional<UserEntity> findByIdWithLock(Long id);
-
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select u from UserEntity u where u.id = :id")
-    Optional<UserEntity> findByIdWithOptimisticLock(Long id);
+    Optional<UserEntity> findByIdWithLock(Long id);
 
 }
