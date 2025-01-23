@@ -26,7 +26,7 @@ public class UserService {
 
     // 포인트 충전
     public UserEntity chargePoint(Long id, Long chargeAmount) {
-        UserEntity user = userRepository.findByIdWithLock(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않는 유저입니다."));
         user.chargePoint(chargeAmount);
         return userRepository.save(user);

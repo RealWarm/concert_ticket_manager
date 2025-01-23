@@ -32,19 +32,11 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findById(id);
     }
 
-    @Override
-    public Optional<UserEntity> findByIdWithLock(Long id) {
-        return userJpaRepository.findByIdWithOptimisticLock(id);
-//        return userJpaRepository.findByIdWithLock(id);
-    }
-
 
     @Override
     public List<UserEntity> findByName(String name) {
         return userJpaRepository.findByName(name);
     }
-
-
 
 
 }

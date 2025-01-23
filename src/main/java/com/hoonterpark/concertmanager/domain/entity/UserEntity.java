@@ -18,8 +18,6 @@ public class UserEntity {
 
     private Long point=0L;
 
-    @Version
-    private int version;
 
     @Builder
     public UserEntity(Long id, String name, Long point) {
