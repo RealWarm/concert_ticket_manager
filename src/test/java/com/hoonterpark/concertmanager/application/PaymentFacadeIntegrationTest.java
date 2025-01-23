@@ -158,7 +158,6 @@ public class PaymentFacadeIntegrationTest {
         AtomicInteger successCnt = new AtomicInteger();
         AtomicInteger failCnt = new AtomicInteger();
 
-
         // when
         for (int i = 0; i < threadCnt; i++) {
             executorService.execute(() -> {
