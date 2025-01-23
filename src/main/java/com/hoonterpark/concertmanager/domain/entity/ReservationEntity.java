@@ -37,8 +37,7 @@ public class ReservationEntity {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @Version
-    private int version;
+
 
     @Builder
     public ReservationEntity(Long userId, Long concertScheduleId, Long seatId, Long totalPrice, LocalDateTime expiredAt, ReservationStatus status) {

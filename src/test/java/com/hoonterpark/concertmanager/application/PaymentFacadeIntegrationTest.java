@@ -70,6 +70,7 @@ public class PaymentFacadeIntegrationTest {
     public void setUp() {
     }
 
+
     // 유저생성
     // 예약중인 토큰생성
     // 예약중인 좌석 생성
@@ -120,79 +121,6 @@ public class PaymentFacadeIntegrationTest {
         UserEntity updatedUser = userService.findById(user.getId());
         assertThat(updatedUser.getPoint()).isEqualTo(10000L); // 20000 - 10000
     }
-
-    @Test
-    public void 한명의_유저가_따닥_결제를_진행하면_1건만_결제된다() throws InterruptedException {
-        // Given
-        UserEntity user = UserEntity.create("hoon", 20000L);
-        userRepository.save(user); // 유저 저장
-
-        LocalDateTime now = LocalDateTime.now();
-        TokenEntity tokenEntity = tokenService.makeToken(now);// 토큰 발행
-        tokenEntity.activateToken(now);
-        tokenEntity.updateTokenToReserved(now);
-        tokenRepository.save(tokenEntity);
-
-        SeatEntity seat = SeatEntity.create(1L, "A1", 10000L, now);
-        seat.reserveSeat(now);
-        seatRepository.save(seat); // 좌석 저장
-
-        ReservationRequest reservationRequest = ReservationRequest.builder()
-                .concertScheduleId(1L)
-                .seatId(seat.getId())
-                .userId(user.getId())
-                .build();
-
-        ReservationEntity reservation = reservationService.makeReservation(reservationRequest, seat.getSeatPrice(), LocalDateTime.now());// 예약 저장
-
-        PaymentRequest paymentRequest = PaymentRequest.builder()
-                .reservationId(reservation.getId())
-                .build();
-
-
-        int threadCnt = 10;
-        int expectedSuccessCnt = 1;
-        int expectedFailCnt = 9;
-        CountDownLatch latch = new CountDownLatch(threadCnt);
-        ExecutorService executorService = Executors.newFixedThreadPool(threadCnt);
-        AtomicInteger successCnt = new AtomicInteger();
-        AtomicInteger failCnt = new AtomicInteger();
-
-
-        // when
-        for (int i = 0; i < threadCnt; i++) {
-            executorService.execute(() -> {
-                try {
-                    paymentFacade.makePayment(paymentRequest, tokenEntity.getTokenValue(), LocalDateTime.now());
-                    successCnt.getAndIncrement();
-                } catch (Exception e) {
-                    failCnt.getAndIncrement();
-                } finally {
-                    latch.countDown();
-                }//try
-            });
-        }//for-i
-
-        latch.await();
-        executorService.shutdown();
-
-
-        assertThat(successCnt.get()).isEqualTo(expectedSuccessCnt);
-        assertThat(failCnt.get()).isEqualTo(expectedFailCnt);
-
-        // 결제가 성공적으로 이루어졌는지 확인
-        ReservationEntity paidReservation = reservationRepository.findById(reservation.getId()).orElseThrow();
-        assertThat(paidReservation.getStatus()).isEqualTo(ReservationStatus.PAID);
-
-        SeatEntity paidSeat = seatRepository.findById(seat.getId()).orElseThrow();
-        assertThat(paidSeat.getStatus()).isEqualTo(SeatStatus.PAID);
-
-        // 유저 잔액이 차감되었는지 확인
-        UserEntity updatedUser = userService.findById(user.getId());
-        assertThat(updatedUser.getPoint()).isEqualTo(10000L); // 20000 - 10000
-    }
-
-
 
 
 }

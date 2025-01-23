@@ -31,12 +31,6 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public Optional<ReservationEntity> findByIdWithLock(Long id) {
-//        return reservationJpaRepository.findByIdWithLock(id);
-        return reservationJpaRepository.findByIdWithOptimisticLock(id);
-    }
-
-    @Override
     public List<ReservationEntity> findByUserId(Long userId) {
         return reservationJpaRepository.findByUserId(userId);
     }
