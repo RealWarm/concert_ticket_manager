@@ -23,4 +23,6 @@ public interface ReservationRepository {
 
     List<ReservationEntity> findBySeatId(Long seatId);
 
+    Optional<ReservationEntity> findByIdWithLock(Long reservationId);
+
 }

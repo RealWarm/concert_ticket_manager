@@ -46,7 +46,7 @@ public class ReservationService {
 
     // 결제한다.
     public ReservationEntity payForReservation(Long reservationId, LocalDateTime now) {
-        ReservationEntity reservation = reservationRepository.findById(reservationId)
+        ReservationEntity reservation = reservationRepository.findByIdWithLock(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "예약이 존재하지 않습니다."));
 
         return reservationRepository.save(reservation.payForReservation(now));

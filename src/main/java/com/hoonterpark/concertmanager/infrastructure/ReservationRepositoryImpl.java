@@ -55,5 +55,10 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         return reservationJpaRepository.findBySeatId(seatId);
     }
 
+    @Override
+    public Optional<ReservationEntity> findByIdWithLock(Long reservationId) {
+        return reservationJpaRepository.findByIdWithOptimisticLock(reservationId);
+    }
+
 
 }

@@ -23,5 +23,8 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
 
     List<ReservationEntity> findBySeatId(Long seatId);
 
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query("select r from ReservationEntity r where r.id = :id")
+    Optional<ReservationEntity> findByIdWithOptimisticLock(Long id);
 
 }
