@@ -50,4 +50,9 @@ public class SeatRepositoryImpl implements SeatRepository {
         return seatJpaRepository.findReservedSeat();
     }
 
+    @Override
+    public Optional<SeatEntity> findByIdWithLock(Long id) {
+        return seatJpaRepository.findByIdWithOptimisticLock(id);
+    }
+
 }

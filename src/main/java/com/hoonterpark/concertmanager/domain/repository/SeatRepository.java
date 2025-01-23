@@ -27,5 +27,7 @@ public interface SeatRepository {
     // RESERVED 상태의 좌석 조회하기(스케줄러)
     List<SeatEntity> findReservedSeat();
 
+    Optional<SeatEntity> findByIdWithLock(Long id);
+
 
 }//end

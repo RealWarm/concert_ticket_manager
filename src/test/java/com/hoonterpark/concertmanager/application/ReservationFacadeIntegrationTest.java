@@ -156,4 +156,62 @@ public class ReservationFacadeIntegrationTest {
         assertThat(cnt).isEqualTo(5);
     }
 
+
+    @DisplayName("10명의 유저가 하나의 좌석을 동시에 예약한다. 1명만 예약이되고 나머지는 에러를 내뱉는다.")
+    @Test
+    public void testReservationConcurrency() throws InterruptedException {
+        // given
+        int threadCnt = 10;
+        int expectedSuccessCnt = 1;
+        int expectedFailCnt = 9;
+        CountDownLatch latch = new CountDownLatch(threadCnt);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCnt);
+        AtomicInteger successCnt = new AtomicInteger();
+        AtomicInteger failCnt = new AtomicInteger();
+
+        // 1개의 좌석 만들기
+        SeatEntity seatA1 = seatRepository.save(SeatEntity.create(1L, "A1", 150000L, LocalDateTime.now()));
+        List<TokenEntity> tokens = new ArrayList<>();
+        List<UserEntity> users = new ArrayList<>();
+        List<ReservationRequest> requests = new ArrayList<>();
+
+        //  10명의 유저 만들기 && 10개의 토큰 만들기
+        for (int i = 1; i <= threadCnt; i++) {
+            UserEntity user = UserEntity.create("user" + i);
+            users.add(userRepository.save(user));
+
+            TokenEntity tokenEntity = TokenEntity.create(LocalDateTime.now(), 10);
+            tokenEntity.activateToken(LocalDateTime.now());
+            tokens.add(tokenRepository.save(tokenEntity));
+
+            ReservationRequest request = new ReservationRequest(1L, seatA1.getId(), user.getId());
+            requests.add(request);
+        }
+
+
+        // when
+        for (int i = 0; i < threadCnt; i++) {
+            ReservationRequest request = requests.get(i);
+            String token = tokens.get(i).getTokenValue();
+            executorService.execute(() -> {
+                reservationFacade.reserveSeat(request, token, LocalDateTime.now());
+                try {
+                    successCnt.getAndIncrement();
+                } catch (Exception e) {
+                    System.out.println("error !! " + e);
+                    failCnt.getAndIncrement();
+                } finally {
+                    latch.countDown();
+                }//try
+            });
+        }//for-i
+
+        latch.await();
+        executorService.shutdown();
+
+        Optional<ReservationEntity> byId = reservationRepository.findById(1L);
+        assertThat(successCnt.get()).isEqualTo(expectedSuccessCnt);
+        assertThat(failCnt.get()).isEqualTo(expectedFailCnt);
+    }
+
 }
