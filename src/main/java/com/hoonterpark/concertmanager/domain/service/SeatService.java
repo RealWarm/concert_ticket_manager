@@ -48,7 +48,7 @@ public class SeatService {
 
     // 좌석결제하기
     public SeatEntity payForSeat(Long seatId, LocalDateTime now){
-        SeatEntity toPayForSeat = seatRepository.findById(seatId)
+        SeatEntity toPayForSeat = seatRepository.findByIdWithLock(seatId)
                 .orElseThrow(() -> new IllegalArgumentException("해당좌석은 없는 좌석입니다."));
         return seatRepository.save(toPayForSeat.payForSeat(now));
     }

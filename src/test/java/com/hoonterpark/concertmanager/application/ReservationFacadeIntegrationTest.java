@@ -215,8 +215,3 @@ public class ReservationFacadeIntegrationTest {
     }
 
 }
-//        log.info("{} :: \nuser: {} \ntoken: {}\nreqeust{}", users.get(i), tokens.get(i), requests.get(i));
-//        System.out.println(i + " :: \nuser:" + users.get(i) + " :: \ntoken: " + tokens.get(i) + "\nrequest: " + requests.get(i));
-//        System.out.println(i + " :: \nuser:" + userRepository.findById(users.get(i).getId())
-//        + " :: \ntoken: " + tokenRepository.findByTokenValue(tokens.get(i).getTokenValue())
-//        + "\nrequest: " + requests.get(i));

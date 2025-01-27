@@ -70,6 +70,7 @@ public class PaymentFacadeIntegrationTest {
     public void setUp() {
     }
 
+
     // 유저생성
     // 예약중인 토큰생성
     // 예약중인 좌석 생성
@@ -121,13 +122,14 @@ public class PaymentFacadeIntegrationTest {
         assertThat(updatedUser.getPoint()).isEqualTo(10000L); // 20000 - 10000
     }
 
+
     @Test
     public void 한명의_유저가_따닥_결제를_진행하면_1건만_결제된다() throws InterruptedException {
         // Given
-        UserEntity user = UserEntity.create("hoon", 20000L);
-        userRepository.save(user); // 유저 저장
+        UserEntity user = userRepository.save(UserEntity.create("hoon", 20000L)); // 유저 저장
 
         LocalDateTime now = LocalDateTime.now();
+
         TokenEntity tokenEntity = tokenService.makeToken(now);// 토큰 발행
         tokenEntity.activateToken(now);
         tokenEntity.updateTokenToReserved(now);
@@ -158,7 +160,6 @@ public class PaymentFacadeIntegrationTest {
         AtomicInteger successCnt = new AtomicInteger();
         AtomicInteger failCnt = new AtomicInteger();
 
-
         // when
         for (int i = 0; i < threadCnt; i++) {
             executorService.execute(() -> {
@@ -177,6 +178,7 @@ public class PaymentFacadeIntegrationTest {
         executorService.shutdown();
 
 
+        // 1명 성공, 9명 실패
         assertThat(successCnt.get()).isEqualTo(expectedSuccessCnt);
         assertThat(failCnt.get()).isEqualTo(expectedFailCnt);
 
@@ -184,6 +186,7 @@ public class PaymentFacadeIntegrationTest {
         ReservationEntity paidReservation = reservationRepository.findById(reservation.getId()).orElseThrow();
         assertThat(paidReservation.getStatus()).isEqualTo(ReservationStatus.PAID);
 
+        // 좌석이 결제 상태로 변경되었는지 확인
         SeatEntity paidSeat = seatRepository.findById(seat.getId()).orElseThrow();
         assertThat(paidSeat.getStatus()).isEqualTo(SeatStatus.PAID);
 
@@ -191,8 +194,6 @@ public class PaymentFacadeIntegrationTest {
         UserEntity updatedUser = userService.findById(user.getId());
         assertThat(updatedUser.getPoint()).isEqualTo(10000L); // 20000 - 10000
     }
-
-
 
 
 }

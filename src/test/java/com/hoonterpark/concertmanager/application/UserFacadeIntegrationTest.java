@@ -96,7 +96,6 @@ public class UserFacadeIntegrationTest {
                 .hasMessage("존재하지 않는 유저입니다."); // 예외 메시지 확인
     }
 
-
     @Test
     public void 한명의_유저가_동시에_여러번_따닥_충전을_하면_한번만_되게한다() throws InterruptedException {
         // Given
