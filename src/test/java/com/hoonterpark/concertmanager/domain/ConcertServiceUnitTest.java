@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager;
+package com.hoonterpark.concertmanager.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

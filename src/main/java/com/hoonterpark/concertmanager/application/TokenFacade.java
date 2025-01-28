@@ -20,7 +20,6 @@ public class TokenFacade {
 
     // 신규 토큰 발행
     public TokenResponse.Token issueToken(Long userId, LocalDateTime now) {
-
         // 유저의 아이디가 유효한지 확인한다
         userService.findById(userId);
 

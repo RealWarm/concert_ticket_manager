@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager;
+package com.hoonterpark.concertmanager.infrastructure;
 
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
