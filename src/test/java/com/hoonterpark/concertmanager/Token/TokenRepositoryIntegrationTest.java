@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager.infrastructure;
+package com.hoonterpark.concertmanager.Token;
 
 
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;

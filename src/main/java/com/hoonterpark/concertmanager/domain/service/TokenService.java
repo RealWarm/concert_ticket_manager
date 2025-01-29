@@ -1,5 +1,7 @@
 package com.hoonterpark.concertmanager.domain.service;
 
+import com.hoonterpark.concertmanager.common.error.CustomException;
+import com.hoonterpark.concertmanager.common.error.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,38 +26,47 @@ public class TokenService {
     private final TokenRepository tokenRepository;
 
 
-    // 토큰을 발행한다
+
+    // 토큰 발행
     public TokenEntity makeToken(LocalDateTime now) {
         return tokenRepository.save(TokenEntity.create(now, TOKEN_ACTIVE_TIME));
-    }//issueToken
+    }
 
-    // 토큰검증
+
+    // 토큰 검증
     public TokenEntity isActive(String tokenValue, LocalDateTime now) {
         TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Not Exist Token!"));
         myToken.isActive(now);
         return myToken;
-    }//getToken
+    }
+
 
     // 대기열 조회 1-1
-    // 토큰의 상태를 조회한다
+    // 토큰의 상태 조회
     public TokenEntity getToken(String tokenValue) {
         return tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-    }//getToken
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Not Exist Token!"));
+    }
 
 
-    // 대기열 조회 1-2
-    // 토큰의 대기순번을 조회한다.
+    // 대기열 조회 1-2 :: 토큰의 대기순번을 조회한다
+    // active 상태인 토큰이 없다면 return 0;
     public int getWaitingNumber(String tokenValue) {
-        // (가장 최신의 ACTIVE 상태인 토큰 rno - 현재 토큰의 rno)
-        TokenEntity latestActive = tokenRepository.findLatestActiveToken()
-                .orElseThrow(() -> new IllegalArgumentException("활성된 토큰이 없습니다."));
-        TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-        Long myWaitinNumber = myToken.getId() - latestActive.getId();
-        return myWaitinNumber >= 0 ? myWaitinNumber.intValue() : 0;
-    }//getWaitingNumber
+        Optional<TokenEntity> latestActive = tokenRepository.findLatestActiveToken();
+
+        if(latestActive.isEmpty()){ // active 상태인 토큰이 없다면 대기순번은 0 이다.
+            return 0;
+        }else { // (가장 최신의 ACTIVE 상태인 토큰 rno - 현재 토큰의 rno)
+            TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Not Exist Token!"));
+
+            Long myWaitinNumber = myToken.getId() - latestActive.get().getId();
+
+            // 안해도 되긴하는데 그냥 예외를 안줘버리겠다는 의미임
+            return myWaitinNumber >= 0 ? myWaitinNumber.intValue() : 0;
+        }
+    }
 
 
     // 토큰 만료시킨다(스케줄러)
@@ -73,7 +85,7 @@ public class TokenService {
         expiredTokens.forEach(token -> tokenRepository.save(token)); // 만료시킨 토큰 저장
 
         return expiredTokens; // 만료시킨 토큰 리스트를 반환
-    }//expireToken
+    }
 
 
     // 토큰 활성화(스케줄러)

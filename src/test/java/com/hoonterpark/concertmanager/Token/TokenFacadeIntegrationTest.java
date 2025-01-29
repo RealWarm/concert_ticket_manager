@@ -1,5 +1,7 @@
-package com.hoonterpark.concertmanager.application;
+package com.hoonterpark.concertmanager.Token;
 
+import com.hoonterpark.concertmanager.application.TokenFacade;
+import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
@@ -89,8 +91,8 @@ public class TokenFacadeIntegrationTest {
     public void testGetQueueToken_NotFound() {
         // When & Then
         assertThatThrownBy(() -> tokenFacade.getQueueToken("invalid-token-value"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 토큰 입니다.");
+                .isInstanceOf(CustomException.class)
+                .hasMessage("Not Exist Token!");
     }
 
     @Test
