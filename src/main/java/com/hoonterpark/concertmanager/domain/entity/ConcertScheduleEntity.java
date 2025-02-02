@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @ToString
+@Table(name = "ConcertSchedules")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConcertScheduleEntity extends BaseEntity {
 

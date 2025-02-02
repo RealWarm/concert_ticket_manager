@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "charges")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargeEntity extends BaseEntity{
 

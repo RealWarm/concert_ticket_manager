@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "concerts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConcertEntity extends BaseEntity{
 
