@@ -4,7 +4,7 @@ package com.hoonterpark.concertmanager.application;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.response.TokenResponse;
+import com.hoonterpark.concertmanager.application.result.TokenResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,41 +18,35 @@ public class TokenFacade {
     private final TokenService tokenService;
 
 
-    // 신규 토큰 발행
-    public TokenResponse.Token issueToken(Long userId, LocalDateTime now) {
+    public TokenResult.TokenQueue issueToken(Long userId, LocalDateTime now) {
         // 유저의 아이디가 유효한지 확인한다
         userService.findById(userId);
 
         // 토큰을 발행한다.
-        TokenEntity newToken = tokenService.makeToken(now);
-        int waitingNumber = tokenService.getWaitingNumber(newToken.getTokenValue());
+        TokenEntity newToken = tokenService.issueToken(now);
+        int waitingNumber = tokenService.getWaitingNumber(newToken.getTokenValue()).intValue();
 
-        return new TokenResponse.Token(newToken.getTokenValue(), waitingNumber);
-    }//issueToken
+        return new TokenResult.TokenQueue(newToken.getTokenValue(), waitingNumber);
+    }
 
 
-    // 토큰및 대기열 반환
-    public TokenResponse.TokenQueueResponse getQueueToken(String tokenValue){
-        // 토큰이 존재하나 확인
-        TokenEntity token = tokenService.getToken(tokenValue);
-
+    public TokenResult.TokenQueue getQueueToken(String tokenValue){
         // 토큰 대기열 반환
-        int waitingNumber = tokenService.getWaitingNumber(tokenValue);
-        return new TokenResponse.TokenQueueResponse(token.getStatus(), waitingNumber);
-    }//getQueueToken
+        int waitingNumber = tokenService.getWaitingNumber(tokenValue).intValue();
 
-
-    // 토큰 만료(스케줄러)
-    // PENDING, ACTIVE, RESERVED 인 토큰중에서
-    // ExpiredAt을 지난 토큰의 상태를 EXPIRED로 바꾼다.
-    public void expireToken(LocalDateTime now){
-        tokenService.expireToken(now);
+        return new TokenResult.TokenQueue(tokenValue, waitingNumber);
     }
 
 
     // 토큰 활성화(스케줄러)
     public void activateToken(LocalDateTime now){
         tokenService.activateToken(now);
+    }
+
+
+    // 토큰 만료(스케줄러)
+    public void expireToken(LocalDateTime now){
+        tokenService.expireToken(now);
     }
 
 

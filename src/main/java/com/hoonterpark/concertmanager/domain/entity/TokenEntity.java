@@ -12,33 +12,14 @@ import java.util.UUID;
 
 @Slf4j
 @Getter
-@Entity
-@ToString
-@Table(name = "Tokens")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TokenEntity extends BaseEntity {
+public class TokenEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
     private TokenStatus status;
 
-    @Column(nullable = false)
     private String tokenValue;
 
     private LocalDateTime expiredAt;
 
-
-    // 유닛 테스트를 위한 용도
-    @Builder
-    public TokenEntity(Long id, TokenStatus status, String tokenValue, LocalDateTime expiredAt) {
-        this.id = id;
-        this.status = status;
-        this.tokenValue = tokenValue;
-        this.expiredAt = expiredAt;
-    }
 
     @Builder
     private TokenEntity(TokenStatus status, String tokenValue, LocalDateTime expiredAt) {
