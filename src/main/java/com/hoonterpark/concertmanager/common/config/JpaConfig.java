@@ -8,7 +8,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-//@EnableJpaAuditing
+@EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "com.hoonterpark.concertmanager.infrastructure")
 public class JpaConfig {
 

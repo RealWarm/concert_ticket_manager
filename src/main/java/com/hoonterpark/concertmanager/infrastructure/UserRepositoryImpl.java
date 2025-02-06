@@ -39,6 +39,11 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByName(name);
     }
 
+    @Override
+    public List<UserEntity> findAll() {
+        return userJpaRepository.findAll();
+    }
+
 
     @Override
     public Optional<UserEntity> findByIdWithLock(Long id) {
