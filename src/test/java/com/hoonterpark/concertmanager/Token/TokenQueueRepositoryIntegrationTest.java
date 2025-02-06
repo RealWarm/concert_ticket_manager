@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
-public class TokenRepositoryIntegrationTest {
+public class TokenQueueRepositoryIntegrationTest {
 
     @Autowired
     private TokenRepository tokenRepository;

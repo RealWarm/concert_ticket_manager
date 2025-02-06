@@ -6,7 +6,6 @@ import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
 import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.ReservationRepository;
 import com.hoonterpark.concertmanager.domain.repository.SeatRepository;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
@@ -15,17 +14,12 @@ import com.hoonterpark.concertmanager.domain.service.*;
 import com.hoonterpark.concertmanager.presentation.controller.request.PaymentRequest;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
 import com.hoonterpark.concertmanager.presentation.controller.response.PaymentResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,7 +76,7 @@ public class PaymentFacadeIntegrationTest {
         userRepository.save(user); // 유저 저장
 
         LocalDateTime now = LocalDateTime.now();
-        TokenEntity tokenEntity = tokenService.makeToken(now);// 토큰 발행
+        TokenEntity tokenEntity = tokenService.issueToken(now);// 토큰 발행
         tokenEntity.activateToken(now);
         tokenEntity.updateTokenToReserved(now);
         tokenRepository.save(tokenEntity);
@@ -130,7 +124,7 @@ public class PaymentFacadeIntegrationTest {
 
         LocalDateTime now = LocalDateTime.now();
 
-        TokenEntity tokenEntity = tokenService.makeToken(now);// 토큰 발행
+        TokenEntity tokenEntity = tokenService.issueToken(now);// 토큰 발행
         tokenEntity.activateToken(now);
         tokenEntity.updateTokenToReserved(now);
         tokenRepository.save(tokenEntity);

@@ -1,11 +1,7 @@
 package com.hoonterpark.concertmanager.presentation.controller;
 
-import com.hoonterpark.concertmanager.application.*;
-import com.hoonterpark.concertmanager.presentation.controller.request.ChargeBalanceRequest;
-import com.hoonterpark.concertmanager.presentation.controller.request.PaymentRequest;
-import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
-import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenRequest;
-import com.hoonterpark.concertmanager.presentation.controller.response.*;
+import com.hoonterpark.concertmanager.application.ConcertFacade;
+import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +21,15 @@ public class ConcertController {
 
 
     @GetMapping("/concerts")
-    @Operation(summary = "예약가능한 콘서트 조회", description = "")
-    public ResponseEntity<List<ConcertResponse.Concert>> getAvailableConcert() {
+    @Operation(summary = "예약가능한 콘서트 조회")
+    public ResponseEntity<List<ConcertResult.Concert>> getAvailableConcert() {
         return new ResponseEntity<>(concertFacade.getConcert(), HttpStatus.OK);
     }
 
 
     @GetMapping("/{concertId}/available-dates")
-    @Operation(summary = "예약가능한 콘서트 날짜 조회", description = "")
-    public ResponseEntity<List<ConcertResponse.ConcertDate>> getAvailableDates(
+    @Operation(summary = "예약가능한 콘서트 날짜 조회")
+    public ResponseEntity<List<ConcertResult.ConcertDate>> getAvailableDates(
             @PathVariable Long concertId
     ) {
         return new ResponseEntity<>(concertFacade.getConcertDate(concertId, LocalDateTime.now()), HttpStatus.OK);
@@ -41,13 +37,12 @@ public class ConcertController {
 
 
     @GetMapping("/{concertScheduleId}/available-seats")
-    public ResponseEntity<List<ConcertResponse.ConcertSeat>> getAvailableSeats(
+    public ResponseEntity<List<ConcertResult.ConcertSeat>> getAvailableSeats(
             @RequestHeader("Authorization") String token,
             @PathVariable Long concertScheduleId
     ) {
         return new ResponseEntity<>(concertFacade.getConcertSeat(concertScheduleId, token, LocalDateTime.now()), HttpStatus.OK);
     }
-
 
 
 

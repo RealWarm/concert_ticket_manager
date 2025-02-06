@@ -20,5 +20,7 @@ public interface UserRepository {
     // 이름으로 검색
     List<UserEntity> findByName(String name);
 
+    List<UserEntity> findAll();
+
     Optional<UserEntity> findByIdWithLock(Long id);
 }

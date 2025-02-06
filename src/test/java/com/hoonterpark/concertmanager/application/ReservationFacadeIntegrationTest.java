@@ -18,13 +18,12 @@ import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
-import com.hoonterpark.concertmanager.presentation.controller.response.ReservationResponse;
+import com.hoonterpark.concertmanager.application.result.ReservationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +93,7 @@ public class ReservationFacadeIntegrationTest {
 
 
         // When
-        ReservationResponse.Reservation response = reservationFacade.reserveSeat(request, tokenEntity.getTokenValue(), LocalDateTime.now());
+        ReservationResult.Reservation response = reservationFacade.reserveSeat(request, tokenEntity.getTokenValue(), LocalDateTime.now());
 
         // Then
         assertThat(response).isNotNull();
@@ -111,7 +110,7 @@ public class ReservationFacadeIntegrationTest {
     public void testReserveSeatMany() {
 
         // Given
-        List<ReservationResponse.Reservation> responses = new ArrayList<>();
+        List<ReservationResult.Reservation> responses = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             UserEntity user = UserEntity.create("user" + i);
             userRepository.save(user);
