@@ -26,8 +26,8 @@ public class PaymentFacade {
     // 콘서트 결제
     public PaymentResponse makePayment(PaymentRequest request, String token, LocalDateTime now){
 
-        // 토큰검증 및 토큰상태변환
-        tokenService.updateTokenToPaid(token, now);
+        // 토큰 활성화 검증
+        tokenService.isActive(token);
 
         // 예약내역 존재 확인 후 결제완료로 상태 변환
         ReservationEntity reservation = reservationService.payForReservation(request.getReservationId(), now);

@@ -3,19 +3,16 @@ package com.hoonterpark.concertmanager.application;
 import com.hoonterpark.concertmanager.domain.entity.ConcertEntity;
 import com.hoonterpark.concertmanager.domain.entity.ConcertScheduleEntity;
 import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
-import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.enums.ConcertStatus;
 import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.*;
 import com.hoonterpark.concertmanager.domain.service.ConcertService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
-import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResponse;
+import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +22,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional // 각 테스트 후 롤백
@@ -89,7 +85,7 @@ public class ConcertFacadeIntegrationTest {
     @Test
     public void testGetConcert() {
         // When
-        List<ConcertResponse.Concert> concerts = concertFacade.getConcert();
+        List<ConcertResult.Concert> concerts = concertFacade.getConcert();
 
         // Then
         assertThat(concerts).isNotEmpty();
@@ -103,7 +99,7 @@ public class ConcertFacadeIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
 
         // When
-        List<ConcertResponse.ConcertDate> concertDates = concertFacade.getConcertDate(concertId, now);
+        List<ConcertResult.ConcertDate> concertDates = concertFacade.getConcertDate(concertId, now);
 
         // Then
         assertThat(concertDates).isNotEmpty();
@@ -117,10 +113,10 @@ public class ConcertFacadeIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
 
 
-        when(tokenService.isActive(any(String.class), any(LocalDateTime.class))).thenReturn(new TokenEntity(1L, TokenStatus.ACTIVE, "testToken", LocalDateTime.now().plusMinutes(10)));
+//        when(tokenService.isActive(any(String.class), any(LocalDateTime.class))).thenReturn(new TokenEntity(1L, TokenStatus.ACTIVE, "testToken", LocalDateTime.now().plusMinutes(10)));
 
         // When
-        List<ConcertResponse.ConcertSeat> concertSeats = concertFacade.getConcertSeat(concertSchedule.getId(), tokenValue, now);
+        List<ConcertResult.ConcertSeat> concertSeats = concertFacade.getConcertSeat(concertSchedule.getId(), tokenValue, now);
 
         // Then
         assertThat(concertSeats).isNotEmpty();

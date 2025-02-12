@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager.presentation;
+package com.hoonterpark.concertmanager.presentation.controller;
 
 import com.hoonterpark.concertmanager.application.UserFacade;
 import com.hoonterpark.concertmanager.presentation.controller.request.ChargeBalanceRequest;
@@ -31,4 +31,6 @@ public class UserController {
     ) {
         return new ResponseEntity<>(userFacade.getUserBalance(userId), HttpStatus.OK);
     }
+
+
 }

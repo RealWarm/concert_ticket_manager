@@ -4,7 +4,7 @@ import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
 
 import java.time.LocalDateTime;
 
-public class ConcertResponse {
+public class ConcertResult {
 
     public record Concert(
             String concertName
@@ -16,7 +16,6 @@ public class ConcertResponse {
     ) {
     }
 
-
     public record ConcertSeat(
             Long seatId,
             String seatNumber,
@@ -24,6 +23,5 @@ public class ConcertResponse {
             Long seatPrice
     ) {
     }
-
 
 }

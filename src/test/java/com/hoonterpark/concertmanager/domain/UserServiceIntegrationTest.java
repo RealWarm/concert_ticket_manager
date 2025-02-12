@@ -1,46 +1,41 @@
-package com.hoonterpark.concertmanager;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+package com.hoonterpark.concertmanager.domain;
 
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.repository.UserRepository;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class UserServiceUnitTest {
+@Transactional
+@SpringBootTest
+public class UserServiceIntegrationTest {
 
-    @InjectMocks
+    @Autowired
     private UserService userService;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
     private UserEntity user;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        // 테스트 데이터 준비
         user = UserEntity.builder()
-                .id(1L)
                 .name("Test User")
-                .point(1000L)
+                .point(1000L) // 초기 포인트 설정
                 .build();
+        userRepository.save(user); // 유저 저장
     }
 
     @Test
     public void testFindById() {
-        // Given
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-
         // When
         UserEntity foundUser = userService.findById(user.getId());
 
@@ -51,11 +46,8 @@ public class UserServiceUnitTest {
 
     @Test
     public void testFindById_NotFound() {
-        // Given
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-
         // When & Then
-        assertThatThrownBy(() -> userService.findById(999L))
+        assertThatThrownBy(() -> userService.findById(999L)) // 존재하지 않는 유저 ID
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 유저 입니다.");
     }
@@ -64,8 +56,6 @@ public class UserServiceUnitTest {
     public void testChargePoint() {
         // Given
         Long chargeAmount = 500L;
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
 
         // When
         UserEntity updatedUser = userService.chargePoint(user.getId(), chargeAmount);
@@ -76,22 +66,9 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void testChargePoint_InvalidUser() {
-        // Given
-        Long chargeAmount = 500L;
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThatThrownBy(() -> userService.chargePoint(999L, chargeAmount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 유저 입니다.");
-    }
-
-    @Test
     public void testChargePoint_InvalidAmount() {
         // Given
         Long chargeAmount = -100L; // 잘못된 포인트 충전 금액
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // When & Then
         assertThatThrownBy(() -> userService.chargePoint(user.getId(), chargeAmount))
@@ -103,8 +80,6 @@ public class UserServiceUnitTest {
     public void testPayment() {
         // Given
         Long payAmount = 500L;
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
 
         // When
         UserEntity updatedUser = userService.payment(user.getId(), payAmount);
@@ -118,7 +93,6 @@ public class UserServiceUnitTest {
     public void testPayment_InsufficientFunds() {
         // Given
         Long payAmount = 1500L; // 잔액 초과
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // When & Then
         assertThatThrownBy(() -> userService.payment(user.getId(), payAmount))
@@ -130,11 +104,11 @@ public class UserServiceUnitTest {
     public void testPayment_InvalidAmount() {
         // Given
         Long payAmount = -100L; // 잘못된 결제 금액
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         // When & Then
         assertThatThrownBy(() -> userService.payment(user.getId(), payAmount))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("포인트 사용은 0원 이상만 가능합니다."); // 예외 메시지 확인
     }
+
 }

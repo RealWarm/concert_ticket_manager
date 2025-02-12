@@ -5,13 +5,16 @@ import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SeatEntity extends BaseEntity {
+public class SeatEntity implements Serializable {
+
+    private static final long serialVersionUID = 123124312394329421L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,9 @@ public class SeatEntity extends BaseEntity {
     private Long seatPrice;
 
     private LocalDateTime expiredAt;
+
+    @Version
+    private int version;
 
     @Builder
     private SeatEntity(Long concertScheduleId, String seatNumber, SeatStatus status, Long seatPrice, LocalDateTime expiredAt) {

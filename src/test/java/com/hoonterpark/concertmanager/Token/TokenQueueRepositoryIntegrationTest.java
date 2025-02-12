@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager;
+package com.hoonterpark.concertmanager.Token;
 
 
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
-public class TokenRepositoryIntegrationTest {
+public class TokenQueueRepositoryIntegrationTest {
 
     @Autowired
     private TokenRepository tokenRepository;

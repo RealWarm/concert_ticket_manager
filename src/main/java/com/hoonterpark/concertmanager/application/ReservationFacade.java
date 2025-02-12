@@ -2,13 +2,12 @@ package com.hoonterpark.concertmanager.application;
 
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
-import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.service.ReservationService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
-import com.hoonterpark.concertmanager.presentation.controller.response.ReservationResponse;
+import com.hoonterpark.concertmanager.application.result.ReservationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,40 +26,26 @@ public class ReservationFacade {
 
 
     // 콘서트 예약
-    public ReservationResponse.Reservation reserveSeat(
+    public ReservationResult.Reservation reserveSeat(
             ReservationRequest request,
             String token,
             LocalDateTime now
     ){
         log.info("reserveSeat invoked!!! {} ", request.toString());
         // 유저 정보 확인
-        log.info("userId {} ", request.getUserId());
         userService.findById(request.getUserId());
-//        log.info("user Check ");
-
-<<<<<<< HEAD:src/main/java/com/hoonterpark/concertmanager/application/ReservationUsecase.java
-        // 토큰검증 >> 인터셉터로 빼기?
-        TokenEntity active = tokenService.isActive(request.getToken(), now);
-=======
-
-        // 토큰검증 >> 인터셉터로 빼기?
-        TokenEntity active = tokenService.isActive(token, now);
->>>>>>> main:src/main/java/com/hoonterpark/concertmanager/application/ReservationFacade.java
-//        log.info("Token check {} ", active);
 
         // 좌석예약하기
         SeatEntity seatEntity = seatService.reserveSeat(request.getSeatId(), now);
-//        log.info("Seat Check {} ", seatEntity);
 
         // 예약 내역 만들기
         ReservationEntity reservation = reservationService.makeReservation(request, seatEntity.getSeatPrice(), now);
-//        log.info("reservation Check {}", reservation);
 
         // 토큰을 예약상태로 변경
-        active.updateTokenToReserved(now);
+        tokenService.updateTokenToReserved(token, now);
 
-        return new ReservationResponse.Reservation(reservation.getId());
-    }//reserveSeat
+        return new ReservationResult.Reservation(reservation.getId());
+    }
 
 
     // 콘서트 좌석 다시 활성화시키기(스케줄러)

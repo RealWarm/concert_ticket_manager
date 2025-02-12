@@ -4,8 +4,7 @@ package com.hoonterpark.concertmanager.presentation.common;
 import com.hoonterpark.concertmanager.application.TokenFacade;
 import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.common.error.ErrorCode;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
-import com.hoonterpark.concertmanager.presentation.controller.response.TokenResponse;
+import com.hoonterpark.concertmanager.application.result.TokenResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }//if
 
         // 요청 헤더에서 Authorization 값을 가져옴
-        String tokenValue = request.getHeader("Authorization");
+        String tokenValue = request.getHeader("QueueToken");
 
         // Authorization 헤더가 존재하지 않음, 요청 권한 없음
         if (tokenValue == null) {
@@ -43,10 +42,10 @@ public class TokenInterceptor implements HandlerInterceptor {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         } else {
             try {
-                TokenResponse.TokenQueueResponse queueToken = tokenFacade.getQueueToken(tokenValue);
+                TokenResult.TokenQueue queueToken = tokenFacade.getQueueToken(tokenValue);
 
                 // 토큰이 활성 상태가 아님, 요청 권한 없음
-                if (!queueToken.tokenStatus().equals(TokenStatus.ACTIVE)) {
+                if (queueToken.queuePosition()!=-1) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     throw new CustomException(ErrorCode.UNAUTHORIZED);
                 }//if-2

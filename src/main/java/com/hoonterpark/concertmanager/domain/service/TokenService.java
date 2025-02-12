@@ -1,16 +1,20 @@
 package com.hoonterpark.concertmanager.domain.service;
 
+import com.hoonterpark.concertmanager.common.error.CustomException;
+import com.hoonterpark.concertmanager.common.error.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
+import com.hoonterpark.concertmanager.domain.repository.TokenRedisRepository;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -18,100 +22,99 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class TokenService {
-    private final int LIMIT_ACTIVATE_USER = 30;
+    private final int ACTIVE_TOKEN_COUNT = 5;
     private final int TOKEN_ACTIVE_TIME = 10;
-    private final TokenRepository tokenRepository;
+    private final String WAITING_QUEUE = "token:waiting";
+    private final String ACTIVE_QUEUE = "token:active";
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
-    // 토큰을 발행한다
-    public TokenEntity makeToken(LocalDateTime now) {
-        return tokenRepository.save(TokenEntity.create(now, TOKEN_ACTIVE_TIME));
-    }//issueToken
-
-    // 토큰검증
-    public TokenEntity isActive(String tokenValue, LocalDateTime now) {
-        TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-        myToken.isActive(now);
-        return myToken;
-    }//getToken
-
-    // 대기열 조회 1-1
-    // 토큰의 상태를 조회한다
-    public TokenEntity getToken(String tokenValue) {
-        return tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-    }//getToken
+    public TokenEntity issueToken(LocalDateTime now) {
+        // UUID(uuid4) 로 유일성 확보
+        TokenEntity newToken = TokenEntity.create(now, TOKEN_ACTIVE_TIME);
+        redisTemplate.opsForZSet().add(WAITING_QUEUE, newToken.getTokenValue(), parseDate(now));
+        return newToken;
+    }
 
 
-    // 대기열 조회 1-2
-    // 토큰의 대기순번을 조회한다.
-    public int getWaitingNumber(String tokenValue) {
-        // (가장 최신의 ACTIVE 상태인 토큰 rno - 현재 토큰의 rno)
-        TokenEntity latestActive = tokenRepository.findLatestActiveToken()
-                .orElseThrow(() -> new IllegalArgumentException("활성된 토큰이 없습니다."));
-        TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-        Long myWaitinNumber = myToken.getId() - latestActive.getId();
-        return myWaitinNumber >= 0 ? myWaitinNumber.intValue() : 0;
-    }//getWaitingNumber
+    public Boolean isActive(String tokenValue) {
+        long result = getWaitingNumber(tokenValue);
+        if (result == -2L) { // 존재(x) = -2
+            throw new CustomException(ErrorCode.NOT_FOUND, "Token does not exist");
+        }
+        return getWaitingNumber(tokenValue) == -1L ? true : false;
+    }
 
 
-    // 토큰 만료시킨다(스케줄러)
-    // PENDING, ACTIVE, RESERVED 인 토큰중에서
-    // ExpiredAt을 지난 토큰의 상태를 EXPIRED로 바꾼다.
-    public List<TokenEntity> expireToken(LocalDateTime now) {
-        // PENDING, ACTIVE, RESERVED 상태인 토큰 모두 수집
-        List<TokenStatus> statuses = Arrays.asList(TokenStatus.PENDING, TokenStatus.ACTIVE, TokenStatus.RESERVED);
-        List<TokenEntity> tokens = tokenRepository.findByStatusIn(statuses);
+    public Long getWaitingNumber(String tokenValue) {
+        // 대기열에 있으면 대기순번 반환
+        Long waitingNum = redisTemplate.opsForZSet().rank(WAITING_QUEUE, tokenValue);
 
-        // 만료시킨 토큰만 필터링
-        List<TokenEntity> expiredTokens = tokens.stream()
-                .filter(token -> token.expireToken(now))
-                .collect(Collectors.toList());
-
-        expiredTokens.forEach(token -> tokenRepository.save(token)); // 만료시킨 토큰 저장
-
-        return expiredTokens; // 만료시킨 토큰 리스트를 반환
-    }//expireToken
+        if (waitingNum == null) { // 대기열에 없고
+            Double score = redisTemplate.opsForZSet().score(ACTIVE_QUEUE, tokenValue);
+            if (score != null) { // 활성화  = -1
+                return -1L;
+            } else if (score == null) { // 존재(x) = -2
+                return -2L;
+            }
+        }
+        return waitingNum;
+    }
 
 
     // 토큰 활성화(스케줄러)
-    public List<TokenEntity> activateToken(LocalDateTime now) {
-        // 은행창구 :: ACTIVATE 토큰 갯수는 30개다. 모자른 갯수를 찾는다 (30-(현재 Activate 갯수))
-        // 현재 Activate 상태인 토큰 갯수 찾기
-        List<TokenStatus> activeStatuses = Arrays.asList(TokenStatus.ACTIVE);
-        List<TokenEntity> activeTokens = tokenRepository.findByStatusIn(activeStatuses);
-        int numberOfUsersToActivate = LIMIT_ACTIVATE_USER - activeTokens.size();
+    // 매번 ACTIVE_TOKEN_COUNT 개의 토큰을 WAITING_QUEUE에서 삭제하고
+    // ACTIVE_QUEUE에 (현재시간 + 10분)을 SCORE로 넣는다.
+    public void activateToken(LocalDateTime now) {
+        ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
+        Set<Object> tokensToActivate = zSetOps.range(WAITING_QUEUE, 0, ACTIVE_TOKEN_COUNT);
 
-        // STATUS가 PENDING인 가장 오래된 N개의 토큰을 조회(LIMIT N 이런느낌?)
-        // 이러면 예) n를 넣어야해 인데 n개중 3개가 시간이 지났으면 n-3개만 넣기 때문에 가득 채우지 못한다.
-        // 30개 가져와서 for 문 돌면서 10개 만료하면 반환! 이렇게 할 수 있는데 너무 구현에 억매여 웃긴상황같음
-        // 차라리 스케줄러 동작시간을 1분에서 30초로 만들어서 빈번하게 작동하게하는게 맞는거 같음
-        List<TokenEntity> tokens = tokenRepository.findTokensToActivate(numberOfUsersToActivate);
-        // activating한 토큰만 필터링
-        List<TokenEntity> activatedTokens = tokens.stream()
-                .filter(token -> token.activateToken(now))
-                .collect(Collectors.toList());
-
-        activatedTokens.forEach(token -> tokenRepository.save(token)); //Jpa 쓰면 굳이 더티체킹으로 안써도 될듯함
-
-        return activatedTokens;
-    }//activateToken
+        if (tokensToActivate != null) {
+            long newExpiredTime = parseDate(now.plusMinutes(TOKEN_ACTIVE_TIME));
+            for (Object token : tokensToActivate) {
+                zSetOps.remove(WAITING_QUEUE, token);
+                zSetOps.add(ACTIVE_QUEUE, token, newExpiredTime);
+            }
+        }
+    }
 
 
-    // 좌석 예약하면서 토큰값 ACTIVE > RESERVED로 바꾸기
-    public Boolean updateTokenToReserved(String tokenValue, LocalDateTime now) {
-        TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-        return myToken.updateTokenToReserved(now);
-    }//updateTokenToReserved
+    // 활성화 토큰 만료시킨다(스케줄러)
+    public void expireToken(LocalDateTime now) {
+        ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
 
-    public Boolean updateTokenToPaid(String tokenValue, LocalDateTime now) {
-        TokenEntity myToken = tokenRepository.findByTokenValue(tokenValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 토큰 입니다."));
-        return myToken.updateTokenToPaid(now);
-    }// updateTokenToPaid
+        // 만료될 토큰 조회
+        long currentTime = parseDate(now);
+        Set<Object> expiredTokens = zSetOps.rangeByScore(ACTIVE_QUEUE, 0, currentTime);
+
+        if (expiredTokens != null) {
+            for (Object token : expiredTokens) {
+                zSetOps.remove(ACTIVE_QUEUE, token);
+            }
+        }
+    }
+
+
+    // 좌석 예약하면서 토큰의 만료시간을 10분 늘려준다.
+    public void updateTokenToReserved(String tokenValue, LocalDateTime now) {
+        ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
+        long newExpirationTime = parseDate(now.plusMinutes(TOKEN_ACTIVE_TIME));
+
+        Double score = zSetOps.score(ACTIVE_QUEUE, tokenValue);
+        if (score != null) {
+            zSetOps.add(ACTIVE_QUEUE, tokenValue, newExpirationTime);
+        } else {
+            throw new CustomException(ErrorCode.NOT_FOUND, "Token does not exist in ACTIVE_QUEUE!");
+        }
+    }
+
+
+    // LocalDateTime을 가중치로 써보고싶어서 생각한 꼼수 ㅎㅎ
+    private long parseDate(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        return Long.parseLong(dateTime.format(formatter));
+    }
 
 
 }//end

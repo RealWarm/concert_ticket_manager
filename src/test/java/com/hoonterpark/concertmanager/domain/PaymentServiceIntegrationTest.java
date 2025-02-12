@@ -1,4 +1,4 @@
-package com.hoonterpark.concertmanager;
+package com.hoonterpark.concertmanager.domain;
 
 import com.hoonterpark.concertmanager.domain.entity.PaymentEntity;
 import com.hoonterpark.concertmanager.domain.repository.PaymentRepository;

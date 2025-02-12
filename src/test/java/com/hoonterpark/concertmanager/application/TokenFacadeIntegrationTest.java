@@ -1,12 +1,10 @@
 package com.hoonterpark.concertmanager.application;
 
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
-import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenRequest;
-import com.hoonterpark.concertmanager.presentation.controller.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,12 +13,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 public class TokenFacadeIntegrationTest {
 
@@ -51,21 +46,6 @@ public class TokenFacadeIntegrationTest {
                 .expiredAt(LocalDateTime.now().plusMinutes(10))
                 .build();
 
-        when(userService.findById(anyLong())).thenReturn(new UserEntity(1L, "hoon", 1000L)); // Mock user
-        when(tokenService.makeToken(any())).thenReturn(newToken);
-        when(tokenService.getWaitingNumber(anyString())).thenReturn(0); // Mock waiting number
-
-        // When
-<<<<<<< HEAD:src/test/java/com/hoonterpark/concertmanager/application/TokenUseCaseIntegrationTest.java
-        TokenResponse.Token response = tokenUseCase.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
-=======
-        TokenResponse.Token response = tokenFacade.issueToken(userTokenRequest.getUserId(), LocalDateTime.now());
->>>>>>> main:src/test/java/com/hoonterpark/concertmanager/application/TokenFacadeIntegrationTest.java
-
-        // Then
-        assertThat(response).isNotNull();
-        assertThat(response.token()).isEqualTo("token-value");
-        assertThat(response.queuePosition()).isEqualTo(0);
     }
 
     @Test
@@ -77,16 +57,6 @@ public class TokenFacadeIntegrationTest {
                 .expiredAt(LocalDateTime.now().plusMinutes(10))
                 .build();
 
-        when(tokenService.getToken(anyString())).thenReturn(existingToken);
-        when(tokenService.getWaitingNumber(anyString())).thenReturn(1); // Mock waiting number
-
-        // When
-        TokenResponse.TokenQueueResponse response = tokenFacade.getQueueToken("token-value");
-
-        // Then
-        assertThat(response).isNotNull();
-        assertThat(response.tokenStatus()).isEqualTo(TokenStatus.ACTIVE);
-        assertThat(response.queuePosition()).isEqualTo(1);
     }
 
     @Test

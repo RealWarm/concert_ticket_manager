@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @ToString
+@Table(name = "reservations")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationEntity {
 
@@ -36,6 +37,9 @@ public class ReservationEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
+
+    @Version
+    private int version;
 
     @Builder
     public ReservationEntity(Long userId, Long concertScheduleId, Long seatId, Long totalPrice, LocalDateTime expiredAt, ReservationStatus status) {

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "Payments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PaymentEntity extends BaseEntity{
 

@@ -1,20 +1,27 @@
 package com.hoonterpark.concertmanager.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
+import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.repository.UserRepository;
 import com.hoonterpark.concertmanager.domain.service.UserService;
 import com.hoonterpark.concertmanager.presentation.controller.response.UserBalanceResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
-@Transactional
+
+@Slf4j
 @SpringBootTest
 public class UserFacadeIntegrationTest {
 
@@ -85,8 +92,49 @@ public class UserFacadeIntegrationTest {
 
         // When & Then
         assertThatThrownBy(() -> userFacade.chargeUserPoint(nonExistentUserId, chargeAmount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 유저 입니다."); // 예외 메시지 확인
+                .isInstanceOf(CustomException.class)
+                .hasMessage("존재하지 않는 유저입니다."); // 예외 메시지 확인
+    }
+
+    @Test
+    public void 한명의_유저가_동시에_여러번_따닥_충전을_하면_한번만_되게한다() throws InterruptedException {
+        // Given
+        Long chargeAmount = 10000L;
+        UserEntity chargingUser = UserEntity.create("hoon", 0L);
+        userRepository.save(chargingUser);
+        Long id = chargingUser.getId(); // 존재하지 않는 유저입니다 에러발생
+
+
+        int threadCnt = 10;
+        int expectedSuccessCnt = 1;
+        int expectedFailCnt = 9;
+        CountDownLatch latch = new CountDownLatch(threadCnt);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCnt);
+        AtomicInteger successCnt = new AtomicInteger();
+        AtomicInteger failCnt = new AtomicInteger();
+
+
+        // when
+        for (int i = 0; i < threadCnt; i++) {
+            executorService.execute(() -> {
+                try {
+                    userFacade.chargeUserPoint(id, chargeAmount);
+                    successCnt.getAndIncrement();
+                } catch (Exception e) {
+                    failCnt.getAndIncrement();
+                } finally {
+                    latch.countDown();
+                }//try
+            });
+        }//for-i
+
+        latch.await();
+        executorService.shutdown();
+
+
+        assertThat(successCnt.get()).isEqualTo(expectedSuccessCnt);
+        assertThat(failCnt.get()).isEqualTo(expectedFailCnt);
+
     }
 
 

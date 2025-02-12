@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
@@ -36,6 +37,17 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<UserEntity> findByName(String name) {
         return userJpaRepository.findByName(name);
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return userJpaRepository.findAll();
+    }
+
+
+    @Override
+    public Optional<UserEntity> findByIdWithLock(Long id) {
+        return userJpaRepository.findByIdWithLock(id);
     }
 
 

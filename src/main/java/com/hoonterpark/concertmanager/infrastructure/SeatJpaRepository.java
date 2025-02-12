@@ -20,8 +20,10 @@ public interface SeatJpaRepository extends JpaRepository<SeatEntity, Long> {
     @Query("select s from SeatEntity s where s.status = 'RESERVED'")
     List<SeatEntity> findReservedSeat();
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT s FROM SeatEntity s WHERE s.id = :id")
-    Optional<SeatEntity> findByIdWithLock(@Param("id") Long id);
+    Optional<SeatEntity> findById(Long id);
+
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query("select s from SeatEntity s where s.id = :id")
+    Optional<SeatEntity> findByIdWithOptimisticLock(Long id);
 
 }

@@ -18,8 +18,6 @@ public interface SeatRepository {
     // 좌석Id로 검색
     Optional<SeatEntity> findById(Long id);
 
-    Optional<SeatEntity> findByIdWithLock(Long id);
-
     // 좌석명으로 검색
     Optional<SeatEntity> findBySeatNumber(String seatNumber);
 
@@ -28,6 +26,8 @@ public interface SeatRepository {
 
     // RESERVED 상태의 좌석 조회하기(스케줄러)
     List<SeatEntity> findReservedSeat();
+
+    Optional<SeatEntity> findByIdWithLock(Long id);
 
 
 }//end
