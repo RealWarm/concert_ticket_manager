@@ -33,20 +33,16 @@ public class ReservationFacade {
             LocalDateTime now
     ){
         // 유저 정보 확인
-        log.info("userId :: {} ", request.getUserId());
         userService.findById(request.getUserId());
 
         // 토큰검증 >> 인터셉터로 빼기?
         TokenEntity active = tokenService.isActive(token, now);
-        log.info("Token check {} ", active);
 
         // 좌석예약하기
         SeatEntity seatEntity = seatService.reserveSeat(request.getSeatId(), now);
-        log.info("Seat Check {} ", seatEntity);
 
         // 예약 내역 만들기
         ReservationEntity reservation = reservationService.makeReservation(request, seatEntity.getSeatPrice(), now);
-        log.info("reservation Check {}", reservation);
 
         // 토큰을 예약상태로 변경
         active.updateTokenToReserved(now);

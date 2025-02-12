@@ -35,7 +35,7 @@ public class UserService {
 
     // 결제
     public UserEntity payment(Long id, Long payAmount){
-        UserEntity user = userRepository.findById(id)
+        UserEntity user = userRepository.findByIdWithLock(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않는 유저입니다."));
         user.pay(payAmount);
         return userRepository.save(user);

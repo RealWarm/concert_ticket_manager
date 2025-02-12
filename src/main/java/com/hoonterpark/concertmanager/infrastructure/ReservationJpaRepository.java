@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface ReservationJpaRepository extends JpaRepository<ReservationEntity, Long> {
 
+    Optional<ReservationEntity> findById(Long id);
+
     List<ReservationEntity> findByUserId(Long userId);
 
     Optional<ReservationEntity> findByUserIdAndConcertScheduleId(Long userId, Long concertScheduleId);
@@ -21,14 +23,8 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
 
     List<ReservationEntity> findBySeatId(Long seatId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select r from ReservationEntity r where r.id = :id")
-    Optional<ReservationEntity> findByIdWithLock(Long id);
-
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select r from ReservationEntity r where r.id = :id")
     Optional<ReservationEntity> findByIdWithOptimisticLock(Long id);
-
-    Optional<ReservationEntity> findById(Long id);
 
 }
