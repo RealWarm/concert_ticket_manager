@@ -1,9 +1,10 @@
+version: '3.8'
 services:
   mysql:
     image: mysql:8.0
     container_name: hoon-mysql
     ports:
-      - "3305:3306"
+      - "23308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=application
@@ -11,6 +12,13 @@ services:
       - MYSQL_DATABASE=hhplus
     volumes:
       - ./data/mysql/:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: hoon-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis/:/data
 
 
 networks:

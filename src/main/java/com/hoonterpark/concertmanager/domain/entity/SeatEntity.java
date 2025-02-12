@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SeatEntity extends BaseEntity implements Serializable {
+public class SeatEntity implements Serializable {
+
+    private static final long serialVersionUID = 123124312394329421L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
