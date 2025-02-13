@@ -1,4 +1,4 @@
-# 마이크로서비스 아키텍처에서의 트랜잭션 처리 및 이벤트 기반 비동기 처리 설계
+# MSA의 트랜잭션 처리 및 이벤트 기반 비동기 처리 설계
 
 
 
@@ -11,7 +11,7 @@
 
 모노리식 서비스의 문제를 해결하기 위해, 서비스를 독립적인 마이크로서비스로 분리합니다. 각 서비스는 독립적으로 배포되고, 자체 데이터베이스를 가집니다. 주요 서비스로는 다음과 같습니다:
 
-1. **Concert Service**: 콘서트 관련 기능을 담당합니다. 콘서트 생성, 조회, 콘서트 옵션 관리, 좌석 잠금/해제 등의 기능을 제공하며, 콘서트 및 옵션 정보 테이블을 관리합니다.
+1. **Concert Service**: 콘서트 관련 기능을 담당합니다. 콘서트 생성, 조회, 콘서트 스케줄 관리, 좌석 잠금/해제 등의 기능을 제공하며, 콘서트 및 옵션 정보 테이블을 관리합니다.
 
 2. **Reservation Service**: 예약 관련 기능을 담당합니다. 예약 생성, 상태 업데이트, 만료된 예약 처리 등의 기능을 제공하며, 예약 정보 및 좌석 상태 테이블을 관리합니다.
 
@@ -55,7 +55,7 @@ class PaymentFacade {
         
     public void processPayment(PaymentCommand paymentCommand) {
         executePayment(paymentCommand);
-        publishPaymentEvent(paymentCommand);
+        publishPaymentCompletedEvent(paymentCommand);
     }
 
     @Transactional
@@ -335,7 +335,7 @@ graph TD;
 
 ---
 6. **Concert Service**:
-  - 콘서트 관련 기능 (좌석 잠금/해제, 콘서트 옵션 관리).
+  - 콘서트 관련 기능 (좌석 잠금/해제, 콘서트 스케줄 관리).
   - 만료된 예약 이벤트를 비동기로 처리.
 
 ---
