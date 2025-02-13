@@ -3,9 +3,6 @@ package com.hoonterpark.concertmanager.domain.service;
 import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.common.error.ErrorCode;
 import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
-import com.hoonterpark.concertmanager.domain.repository.TokenRedisRepository;
-import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -14,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 
 @Service
