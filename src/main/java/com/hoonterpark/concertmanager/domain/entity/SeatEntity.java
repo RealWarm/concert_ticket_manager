@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @ToString
+@Table(name = "seats")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SeatEntity implements Serializable {
 
