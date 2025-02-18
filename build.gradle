@@ -61,6 +61,10 @@ dependencies {
 	implementation 'org.redisson:redisson-spring-boot-starter:3.43.0'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+	// Kafaka
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
 }
 
 test {
