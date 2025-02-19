@@ -27,7 +27,7 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String consumerGroupId;
 
-    @Value("${payment_topic}")
+    @Value("${topic.payment}")
     private String paymentTopic;
 
 

@@ -5,7 +5,6 @@ import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
-import com.hoonterpark.concertmanager.infrastructure.TokenJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 
 
-//public class TokenServiceUnitTest {
+public class TokenServiceUnitTest {
 //
 //    @InjectMocks
 //    private TokenService tokenService;
@@ -199,4 +198,4 @@ import static org.mockito.Mockito.*;
 //        assertThat(testUpdateToken.getStatus()).isEqualTo(TokenStatus.PAID);
 //    }
 //
-//}//end
+}//end

@@ -75,7 +75,8 @@ spring:
     level:
       org.springframework.cache: trace # Redis 사용에 대한 로그가 조회되도록 설정
 
-payment_topic: PAYMENT-INFO
+topic:
+  payment: PAYMENT
 ---
 #spring:
 #  application:

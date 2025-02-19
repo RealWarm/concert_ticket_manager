@@ -1,7 +1,7 @@
 
 package com.hoonterpark.concertmanager.application;
 
-import com.hoonterpark.concertmanager.application.event.PaidEvent;
+import com.hoonterpark.concertmanager.domain.event.PaidEvent;
 import com.hoonterpark.concertmanager.domain.entity.PaymentEntity;
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.service.*;
