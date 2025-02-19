@@ -1,5 +1,7 @@
+
 package com.hoonterpark.concertmanager.application;
 
+import com.hoonterpark.concertmanager.application.event.PaidEvent;
 import com.hoonterpark.concertmanager.domain.entity.PaymentEntity;
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.service.*;
@@ -7,6 +9,7 @@ import com.hoonterpark.concertmanager.presentation.controller.request.PaymentReq
 import com.hoonterpark.concertmanager.presentation.controller.response.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ public class PaymentFacade {
     private final TokenService tokenService;
     private final PaymentService paymentService;
     private final ReservationService reservationService;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     // 콘서트 결제
@@ -40,6 +44,8 @@ public class PaymentFacade {
 
         // 결제내역 생성
         PaymentEntity payment = paymentService.makePayment(reservation.getId(), reservation.getTotalPrice());
+
+        eventPublisher.publishEvent(new PaidEvent(this, reservation));
 
         return new PaymentResponse(payment.getId());
     }
