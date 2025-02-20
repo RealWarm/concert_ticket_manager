@@ -45,6 +45,7 @@ public class PaymentFacade {
         // 결제내역 생성
         PaymentEntity payment = paymentService.makePayment(reservation.getId(), reservation.getTotalPrice());
 
+        // 트랜잭션이 커밋된 후 Kafka로 메세지 전송
         eventPublisher.publishEvent(new PaidEvent(this, reservation));
 
         return new PaymentResponse(payment.getId());

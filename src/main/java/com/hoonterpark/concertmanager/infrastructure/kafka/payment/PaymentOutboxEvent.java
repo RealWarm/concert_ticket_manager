@@ -28,7 +28,7 @@ public class PaymentOutboxEvent {
     private String eventType;
 
     @Column(nullable = false)
-    private String status = PaymentOutBoxEventStatus.PENDING.name();
+    private String status = PaymentOutBoxEventStatus.INIT.name();
 
     @Column(nullable = false)
     private Integer retryCount = 0;

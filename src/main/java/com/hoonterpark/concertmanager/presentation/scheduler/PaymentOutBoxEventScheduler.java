@@ -35,7 +35,7 @@ public class PaymentOutBoxEventScheduler {
 
 
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 30000)
     public void processPaymentOutboxEvent() {
         List<PaymentOutboxEvent> pendingEvents = paymentMessageOutboxRepository.findByStatus(PaymentOutBoxEventStatus.PENDING.name());
 
@@ -46,7 +46,7 @@ public class PaymentOutBoxEventScheduler {
                 if (ReservationStatus.PAID.equals(reservation.getStatus())) {
                     String payload = objectMapper.writeValueAsString(reservation);
                     kafkaTemplate.send(PAYMENT_TOPIC, String.valueOf(event.getAggregateId()), payload);
-                    event.setStatus("SENT");
+                    event.setStatus(PaymentOutBoxEventStatus.RECEIVED.name());
                     paymentMessageOutboxRepository.save(event);
                 }
             } catch (Exception e) {
@@ -60,7 +60,7 @@ public class PaymentOutBoxEventScheduler {
         int retryCount = event.getRetryCount() + 1;
 
         if (retryCount >= MAX_RETRY_COUNT) {
-            event.setStatus("FAILED");
+            event.setStatus(PaymentOutBoxEventStatus.FAIL.name());
             event.setRetryCount(MAX_RETRY_COUNT);
             log.error("최대 재시도 횟수를 초과하여 이벤트 전송이 실패하였습니다.: {}", event);
         } else {

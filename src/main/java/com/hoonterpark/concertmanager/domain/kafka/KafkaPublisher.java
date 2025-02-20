@@ -38,7 +38,7 @@ public class KafkaPublisher {
                     // 메시지 전송 성공
                     log.info("Sent message=[{}] with offset=[{}]", message, result.getRecordMetadata().offset());
                     PaymentOutboxEvent paymentOutboxEvent = new PaymentOutboxEvent("Reservation", reservation.getId(), "PaidEvent");
-                    paymentOutboxEvent.setStatus(PaymentOutBoxEventStatus.INIT.name());
+                    paymentOutboxEvent.setStatus(PaymentOutBoxEventStatus.RECEIVED.name());
                     paymentMessageOutboxRepository.save(paymentOutboxEvent);
                 } else {
                     // 메시지 전송 실패
