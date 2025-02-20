@@ -1,7 +1,5 @@
 package com.hoonterpark.concertmanager.domain.enums;
 
-import org.apache.commons.lang3.function.Failable;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

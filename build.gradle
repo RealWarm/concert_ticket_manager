@@ -63,7 +63,7 @@ dependencies {
 
 	// Kafaka
 	implementation 'org.springframework.kafka:spring-kafka'
-	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test' // Spring Kafka Test (for @EmbeddedKafka)
 
 }
 

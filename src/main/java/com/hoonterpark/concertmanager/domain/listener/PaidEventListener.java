@@ -19,7 +19,6 @@ public class PaidEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handlePaidEvent(PaidEvent paidEvent) {
         try {
-            // 예약 정보를 Kafka로 전달
             kafkaPublisher.publishPayment(paidEvent.getReservation());
         } catch (Exception e) {
             log.error("예약 정보 전달에 실패하였습니다. 예약 정보: {}", paidEvent.getReservation(), e);
