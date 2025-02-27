@@ -1,6 +1,7 @@
 package com.hoonterpark.concertmanager.application;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hoonterpark.concertmanager.domain.entity.ConcertEntity;
 import com.hoonterpark.concertmanager.domain.entity.ConcertScheduleEntity;
 import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
@@ -24,6 +25,7 @@ public class ConcertFacade {
     private final TokenService tokenService;
     private final ConcertService concertService;
     private final SeatService seatService;
+    private final ObjectMapper objectMapper;
 
     // 콘서트 목록 조회
     @Cacheable(value = "concerts", cacheManager = "cacheManager")
@@ -47,9 +49,9 @@ public class ConcertFacade {
 
     // 콘서트 좌석 조회
     @Cacheable(key = "#concertScheduleId", value = "seats", cacheManager = "cacheManager")
-    public List<ConcertResult.ConcertSeat> getConcertSeat(Long concertScheduleId, String tokenValue, LocalDateTime now){
+    public List<SeatEntity> getConcertSeat(Long concertScheduleId, String tokenValue, LocalDateTime now){
         // 토큰 검증
-        tokenService.isActive(tokenValue);
+        //tokenService.isActive(tokenValue);
 
         // 콘서트 스케줄이 존재하니?
         concertService.findConcertScheduleById(concertScheduleId);
@@ -57,9 +59,9 @@ public class ConcertFacade {
         // 콘서트 스케줄에 해당하는 모든 좌석 조회
         List<SeatEntity> concertSeats = seatService.getConcertSeats(concertScheduleId);
 
-        return concertSeats.stream()
-                .map(cs -> new ConcertResult.ConcertSeat(cs.getId(), cs.getSeatNumber(), cs.getStatus(), cs.getSeatPrice()))
-                .collect(Collectors.toList());
+        System.out.println("++++++++@@ getConcertSeat :: "+concertSeats.toString());
+
+        return concertSeats;
     }
 
 }//end

@@ -1,6 +1,7 @@
 package com.hoonterpark.concertmanager.presentation.controller;
 
 import com.hoonterpark.concertmanager.application.ConcertFacade;
+import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
 import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,11 +38,13 @@ public class ConcertController {
 
 
     @GetMapping("/{concertScheduleId}/available-seats")
-    public ResponseEntity<List<ConcertResult.ConcertSeat>> getAvailableSeats(
+    public ResponseEntity<List<SeatEntity>> getAvailableSeats(
             @RequestHeader("Authorization") String token,
             @PathVariable Long concertScheduleId
     ) {
-        return new ResponseEntity<>(concertFacade.getConcertSeat(concertScheduleId, token, LocalDateTime.now()), HttpStatus.OK);
+        List<SeatEntity> concertSeat = concertFacade.getConcertSeat(concertScheduleId, token, LocalDateTime.now());
+        System.out.println("++++++++@@ "+concertSeat.toString());
+        return new ResponseEntity<>(concertSeat, HttpStatus.OK);
     }
 
 

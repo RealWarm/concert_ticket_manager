@@ -14,7 +14,7 @@ public class TokenScheduler {
     private final TokenFacade tokenFacade;
 
 
-    @Scheduled(fixedRate = 60 * 1000) // 1분 간격 스케줄링
+    @Scheduled(fixedRate = 10 * 1000) // 1분 간격 스케줄링
     public void activateTokens(){
         tokenFacade.activateToken(LocalDateTime.now());
     }
