@@ -11,7 +11,7 @@ import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
 import com.hoonterpark.concertmanager.domain.repository.ReservationRepository;
 import com.hoonterpark.concertmanager.domain.service.ReservationService;
-import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
+import com.hoonterpark.concertmanager.interfaces.controller.api.request.ReservationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

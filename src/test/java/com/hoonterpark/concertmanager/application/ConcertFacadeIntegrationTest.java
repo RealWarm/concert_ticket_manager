@@ -9,7 +9,7 @@ import com.hoonterpark.concertmanager.domain.repository.*;
 import com.hoonterpark.concertmanager.domain.service.ConcertService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
-import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResult;
+import com.hoonterpark.concertmanager.application.result.ConcertResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

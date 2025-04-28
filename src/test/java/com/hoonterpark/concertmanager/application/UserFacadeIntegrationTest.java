@@ -4,7 +4,7 @@ import com.hoonterpark.concertmanager.common.error.CustomException;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.repository.UserRepository;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.response.UserBalanceResponse;
+import com.hoonterpark.concertmanager.interfaces.controller.api.response.UserBalanceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

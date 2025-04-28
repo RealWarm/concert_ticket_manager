@@ -3,14 +3,9 @@
 ### SwaggerUI
 ![image](https://github.com/user-attachments/assets/e88294cd-c4c6-42ef-b7cd-b35daa5e0623)
 
-### Milestone
-
-![image](https://github.com/user-attachments/assets/b6900f17-5d3f-4fad-a92e-aa90d7db86c4)
-
-
 ### FLowChart
 
-![image](https://github.com/user-attachments/assets/ea616504-20db-45c4-842a-2e937fb6cbe0)
+![Image](https://github.com/user-attachments/assets/a8a1527a-ed84-4f8a-be90-3f87cc6dca95)
 
 
 ### Sequence Diagram

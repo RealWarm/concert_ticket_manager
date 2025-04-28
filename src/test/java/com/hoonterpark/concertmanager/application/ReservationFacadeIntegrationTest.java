@@ -17,7 +17,7 @@ import com.hoonterpark.concertmanager.domain.service.ReservationService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
+import com.hoonterpark.concertmanager.interfaces.controller.api.request.ReservationRequest;
 import com.hoonterpark.concertmanager.application.result.ReservationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
