@@ -2,7 +2,7 @@ package com.hoonterpark.concertmanager.application;
 
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.response.UserBalanceResponse;
+import com.hoonterpark.concertmanager.interfaces.controller.api.response.UserBalanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,6 @@ package com.hoonterpark.concertmanager.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 import com.hoonterpark.concertmanager.domain.entity.ReservationEntity;
 import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
@@ -10,7 +9,6 @@ import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
 import com.hoonterpark.concertmanager.domain.entity.UserEntity;
 import com.hoonterpark.concertmanager.domain.enums.ReservationStatus;
 import com.hoonterpark.concertmanager.domain.enums.SeatStatus;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
 import com.hoonterpark.concertmanager.domain.repository.ReservationRepository;
 import com.hoonterpark.concertmanager.domain.repository.SeatRepository;
 import com.hoonterpark.concertmanager.domain.repository.TokenRepository;
@@ -19,8 +17,8 @@ import com.hoonterpark.concertmanager.domain.service.ReservationService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
 import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.request.ReservationRequest;
-import com.hoonterpark.concertmanager.presentation.controller.response.ReservationResponse;
+import com.hoonterpark.concertmanager.interfaces.controller.api.request.ReservationRequest;
+import com.hoonterpark.concertmanager.interfaces.controller.response.ReservationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +35,6 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,28 +1,9 @@
 package com.hoonterpark.concertmanager.Token;
 
-import com.hoonterpark.concertmanager.application.TokenFacade;
-import com.hoonterpark.concertmanager.common.error.CustomException;
-import com.hoonterpark.concertmanager.domain.entity.TokenEntity;
-import com.hoonterpark.concertmanager.domain.entity.UserEntity;
-import com.hoonterpark.concertmanager.domain.enums.TokenStatus;
-import com.hoonterpark.concertmanager.domain.service.TokenService;
-import com.hoonterpark.concertmanager.domain.service.UserService;
-import com.hoonterpark.concertmanager.presentation.controller.request.UserTokenRequest;
-import com.hoonterpark.concertmanager.application.result.TokenResult;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 public class TokenQueueFacadeIntegrationTest {
 //

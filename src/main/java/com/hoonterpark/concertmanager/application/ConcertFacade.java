@@ -7,11 +7,10 @@ import com.hoonterpark.concertmanager.domain.entity.SeatEntity;
 import com.hoonterpark.concertmanager.domain.service.ConcertService;
 import com.hoonterpark.concertmanager.domain.service.SeatService;
 import com.hoonterpark.concertmanager.domain.service.TokenService;
-import com.hoonterpark.concertmanager.presentation.controller.response.ConcertResult;
+import com.hoonterpark.concertmanager.application.result.ConcertResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
