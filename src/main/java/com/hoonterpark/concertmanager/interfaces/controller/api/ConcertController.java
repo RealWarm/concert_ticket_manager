@@ -26,7 +26,7 @@ public class ConcertController {
     @GetMapping("/concerts")
     @Operation(summary = "예약가능한 콘서트 조회")
     public ResponseEntity<List<ConcertHttpResponse.ConcertResponse>> getAvailableConcert() {
-        return new ResponseEntity<>(concertFacade.getConcert(), HttpStatus.OK);
+        return new ResponseEntity<>(ConcertHttpResponse.ConcertResponse.fromResult(concertFacade.getConcert()), HttpStatus.OK);
     }
 
     @GetMapping("/{concertId}/available-dates")
@@ -48,7 +48,6 @@ public class ConcertController {
     ) {
         return new ResponseEntity<>(concertFacade.getConcertSeat(concertScheduleId, token, LocalDateTime.now()), HttpStatus.OK);
     }
-
 }
 
 
